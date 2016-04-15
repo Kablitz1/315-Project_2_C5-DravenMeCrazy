@@ -77,13 +77,13 @@ eurecaServer.exports.handshake = function()
 	}
 }
 
-eurecaServer.exports.helloWorld = function(){
+eurecaServer.exports.helloWorld = function(p_Id, eurecaId){
       for (var c in clients)
 	{
 		var remote = clients[c].remote;
 		for (var cc in clients)
 		{		
-			remote.helloWorld(clients[c].id);		
+			remote.helloWorld(clients[cc].id, p_Id, eurecaId);		
 		}
 	}
 };

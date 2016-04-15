@@ -7,10 +7,12 @@
     var flipFlop = false;
     
 
+	var myId;
     //players
     var player1;
     var player2;
-	var myplayerId;
+	var playerId;
+	//var myplayerId;
     
     //turrets
     var turrets = [];
@@ -90,16 +92,31 @@ var eurecaClientSetup = function(){
     //methods under "exports" become available on server side (aka heres the functions the server can call)
     eurecaClient.exports.setID = function(id, playerIndex){
         myId = id; //unique connection ID
-        playerID = playerIndex;
+        playerId = playerIndex;
         console.log(playerId);
         game.state.add('game', PhaserGame, true);
         //PhaserGame.create(); //create method of game, need to define for this instance
-        eurecaServer.handshake();
+        //eurecaServer.handshake();
         ready = true; //start handshaking
     }    
     
-    eurecaClient.exports.helloWorld = function(id){
-		console.log("HELLO WORLD" + id);
+    eurecaClient.exports.helloWorld = function(id, p_Id, eurecaId){
+		
+		//console.log("HELLO WORLD" + id);
+		console.log("HELLO WORLD " + p_Id);
+		console.log("HELLO WORLD " + eurecaId);
+		
+		/*if(id != myId)
+			console.log("HELLO WORLD" + id);
+		
+		else
+			console.log("HELLO WORLD" + id);*/
+		
+		/*if(p_Id === 1)
+			console.log("HELLO WORLD" + id);
+		
+		else
+			console.log("HELLO WORLD" + myId);*/
 	}
     /*
 //basically any functions that server needs to call will be defined here    
@@ -273,7 +290,7 @@ Player.prototype.update = function(){
     }
 	
 	if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
-		eurecaServer.helloWorld();
+		eurecaServer.helloWorld(playerId);
 	}
 	
     
@@ -482,7 +499,7 @@ var GameState = function(){
             helpButton.onInputOut.add(outHelp, this); //when button is not hovered over over
             helpButton.onInputUp.add(upHelp, this); //when finished clicking
 
-            var myId = "unique ID1";//server assigns this
+            //var myId = "unique ID1";//server assigns this
             this.player1 = new Player(this, myId, 1);
             this.player2 = new Player(this, myId, 2);
 
@@ -605,7 +622,7 @@ var GameState = function(){
         this.player2.update();
         
         if(this.game.input.keyboard.isDown(Phaser.Keyboard.J)){
-             eurecaClient.exports.helloWorld();
+             eurecaServer.helloWorld(playerId, myId);
         }
         
         
