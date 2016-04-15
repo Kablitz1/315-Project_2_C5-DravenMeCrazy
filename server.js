@@ -13,7 +13,7 @@ var playerIndex = 0;
 var Eureca = require('eureca.io');
 
 //ADD MORE CLIENT FUNCTIONS LATER
-var eurecaServer = new Eureca.Server({allow:['setId', 'helloWorld', 'spawnEnemy']});
+var eurecaServer = new Eureca.Server({allow:['setID', 'helloWorld', 'spawnPlayer']});
 
 console.log('Print Test');
 
@@ -34,8 +34,8 @@ eurecaServer.onConnect(function (conn) {
 	//register the client
 	clients[conn.id] = {id:conn.id, remote:remote}
 	
-	//here we call setId (defined in the client side)
-	remote.setId(conn.id, playerIndex);	
+	//here we call setID (defined in the client side)
+	remote.setID(conn.id, playerIndex);	
 	//if(client calls helloWorld){
 		//remote.helloWorld();
 	//}
@@ -72,9 +72,20 @@ eurecaServer.exports.handshake = function()
 			var x = 0;
 			var y = 0;
 
-			remote.spawnEnemy(clients[cc].id, x, y);		
+			//remote.spawnPlayer(clients[cc].id, index);		
 		}
 	}
 }
 
-server.listen(12333);
+eurecaServer.exports.helloWorld = function(){
+      for (var c in clients)
+	{
+		var remote = clients[c].remote;
+		for (var cc in clients)
+		{		
+			remote.helloWorld(clients[c].id);		
+		}
+	}
+};
+
+server.listen(12334);
