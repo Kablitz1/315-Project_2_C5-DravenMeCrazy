@@ -112,8 +112,6 @@ var eurecaClientSetup = function(){
     //create eureca.io client instance
     var eurecaClient = new Eureca.Client();
     
-    
-    //?
     eurecaClient.ready(function (proxy){
         eurecaServer = proxy;
     });
@@ -130,24 +128,10 @@ var eurecaClientSetup = function(){
     }    
     
     eurecaClient.exports.helloWorld = function(id, p_Id, eurecaId){
-		
-		//console.log("HELLO WORLD" + id);
 		console.log("HELLO WORLD " + p_Id);
 		console.log("HELLO WORLD " + eurecaId);
-		
-		/*if(id != myId)
-			console.log("HELLO WORLD" + id);
-		
-		else
-			console.log("HELLO WORLD" + id);*/
-		
-		/*if(p_Id === 1)
-			console.log("HELLO WORLD" + id);
-		
-		else
-			console.log("HELLO WORLD" + myId);*/
 	}
- /*
+ 
 //basically any functions that server needs to call will be defined here    
     eurecaClient.exports.updateState = function(id, state){
         PhaserGame.update();
@@ -155,9 +139,6 @@ var eurecaClientSetup = function(){
     
     eurecaClient.exports.startNextRound = function(startBool){
         
-    };
-    eurecaClient.exports.helloWorld = function(){
-        console.log("HELLO WORLD");
     };
     eurecaClient.exports.playerFire = function(player_index){
         
@@ -179,7 +160,7 @@ var eurecaClientSetup = function(){
     };
     eurecaClient.exports.playerPlaceTurret = function(){
         
-    };*/
+    };
 };
 
 
@@ -781,12 +762,11 @@ var GameState = function(){
             roundstate.setText(round);
             mapstate.setText(map);
             scorestate.setText(score);
-            goldstate.setText(gold);
+            goldstate.setText(this.player1.gold);
           
         
     }
         
-
 
     };
 
