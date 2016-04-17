@@ -72,7 +72,9 @@
     var gunspeedButton5;
 	
     var helpButton;
+	
     var optionButton;
+	var settingsButton;
     
     // enemies
     var mobs;
@@ -478,17 +480,19 @@ var GameState = function(){
             game.load.spritesheet('upgrade_button_spritesheet', asset_location + 'upgrade_button_spritesheet.png', 193, 80);
             game.load.spritesheet('option_button_spritesheet', asset_location + 'option_button_spritesheet.png', 193, 80);
             game.load.spritesheet('help_button_spritesheet', asset_location + 'help_button_spritesheet.png', 193, 80);
-	    game.load.image('power1button',asset_location + 'power1button.jpg');
-	    game.load.image('power2button',asset_location + 'power2button.jpg');
-	    game.load.image('power3button',asset_location + 'power3button.jpg');
-	    game.load.image('power4button',asset_location + 'power4button.jpg');
-	    game.load.image('power5button',asset_location + 'power5button.jpg');
+			game.load.image('power1button',asset_location + 'power1button.jpg');
+			game.load.image('power2button',asset_location + 'power2button.jpg');
+			game.load.image('power3button',asset_location + 'power3button.jpg');
+			game.load.image('power4button',asset_location + 'power4button.jpg');
+			game.load.image('power5button',asset_location + 'power5button.jpg');
 			
-	    game.load.image('speed1button',asset_location + 'speed1button.jpg');
-	    game.load.image('speed2button',asset_location + 'speed2button.jpg');
-	    game.load.image('speed3button',asset_location + 'speed3button.jpg');
-	    game.load.image('speed4button',asset_location + 'speed4button.jpg');
-	    game.load.image('speed5button',asset_location + 'speed5button.jpg');
+			game.load.image('speed1button',asset_location + 'speed1button.jpg');
+			game.load.image('speed2button',asset_location + 'speed2button.jpg');
+			game.load.image('speed3button',asset_location + 'speed3button.jpg');
+			game.load.image('speed4button',asset_location + 'speed4button.jpg');
+			game.load.image('speed5button',asset_location + 'speed5button.jpg');
+			
+			game.load.image('settingsbutton',asset_location + 'settingsbutton.jpg');
             
             //menus
             game.load.image('upgrade_menu', asset_location + 'upgrade_menu.png');
@@ -634,6 +638,9 @@ var GameState = function(){
             
             option_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'option_menu');
             option_menu.visible =! option_menu.visible;
+			
+			settingsButton = game.add.button(880,160,'settingsbutton',settings,this,0)
+			settingsButton.visible =! settingsButton.visible;
             
             help_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'help_menu');
             help_menu.visible =! help_menu.visible;
@@ -783,13 +790,12 @@ var GameState = function(){
         projectile.kill();
         mobs.health -= projectile.damage;
 		
-		PhaserGame.player1.gold += 1;
-		PhaserGame.player2.gold += 1;
-		
         if (mobs.health <= 0)
         {
             mobs.destroy();
             score = score + 1;
+			this.player1.gold += 1;
+			this.player2.gold += 1;
             deadmobs ++;
             
             if(deadmobs === mobnumber )
@@ -827,27 +833,160 @@ var GameState = function(){
     
 ////////////////////////////////////////////////////////////////////
 //  Mobs Spawning
-////////////////////////////////////////////////////////////////////    
+////////////////////////////////////////////////////////////////////
+
+    
      function createmobs()
      {
-         
-       for( var i = 0; i < mobnumber; i ++)
-        {
-            var mob =  mobs.create(1950 - Math.random()*(100-50) , Math.random()*(700-100)+100,'mob_sprite');
-            mob.body.velocity.x = -100;
-            mob.body.gravity.y = 0;
-            mob.health = 250;
-            
-            if (round === 10)
-            {
-                var boss = mobs.create(1700,400,'boss_sprite');
-                //boss.body.velocity.x = 100;
-                boss.body.gravity.y = 0;
-                boss.health = 5000;
-                
-            }
-        }
-    }
+        switch(round){ 
+		case 1:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex , wavey + 100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 10;
+				wavey += 140;
+			}
+			break;
+        case 2:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 5;
+				wavey += 65;
+			}
+			break;
+			
+		case 3:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 5;
+				wavey += 45;
+			}
+			break;
+			
+		case 4:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 5;
+				wavey += 30;
+			}
+			break;
+			
+		case 5:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 10;
+				wavey += 20;
+			}
+			break;
+			
+		case 6:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 10;
+				wavey += 15;
+			}
+			break;
+			
+		case 7:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 5;
+				wavey += 15;
+			}
+			break;
+			
+		case 8:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 15;
+				wavey += 10;
+			}
+			break;
+			
+		case 9:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 12;
+				wavey += 10;
+			}
+			break;
+			
+		case 10:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex,wavey + 100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 12;
+				wavey += 10;
+			}
+			var boss = mobs.create(1700,400,'boss_sprite');
+            //boss.body.velocity.x = 100;
+            boss.body.gravity.y = 0;
+            boss.health = 5000;
+				
+			break;
+        
+		default:
+		
+		}	
+	}
     
 ////////////////////////////////////////////////////////////////////
 //  Button Interfaces
@@ -892,15 +1031,16 @@ var GameState = function(){
     function power1upgrade()
     {
 	var goldneeded = 5;
-	if(gold < goldneeded)
+	if(this.player1.gold < goldneeded)
 	{
 		//
 	}
 	else
 	{
+		console.log("Bought");
 		turretdamage = turretdamage + 5;
-		PhaserGame.player1.gold -= 5;
-		PhaserGame.player2.gold -= 5;
+		this.player1.gold -= 5;
+		this.player2.gold -= 5;
 	}
 	//turretdamage = turretdamage + 5;
 	
@@ -910,30 +1050,32 @@ var GameState = function(){
     function power2upgrade()
     {
 	var goldneeded = 10;
-	if(gold < goldneeded)
+	if(this.player1.gold < goldneeded)
 	{
 		//
 	}
 	else
 	{
+		console.log("Bought");
 		turretdamage = turretdamage + 10;
-		PhaserGame.player1.gold -= 10;
-		PhaserGame.player2.gold -= 10;
+		this.player1.gold -= 10;
+		this.player2.gold -= 10;
 	}
     	
     }
     function power3upgrade()
     {
 	var goldneeded = 15;
-	if(gold < goldneeded)
+	if(this.player1.gold < goldneeded)
 	{
 		//
 	}
 	else
 	{
+		console.log("Bought");
 		turretdamage = turretdamage + 15;
-		PhaserGame.player1.gold -= 15;
-		PhaserGame.player2.gold -= 15;
+		this.player1.gold -= 15;
+		this.player2.gold -= 15;
 	}
     	
     }
@@ -941,30 +1083,32 @@ var GameState = function(){
     function power4upgrade()
     {
 	var goldneeded = 20;
-	if(gold < goldneeded)
+	if(this.player1.gold < goldneeded)
 	{
 		//
 	}
 	else
 	{
+		console.log("Bought");
 		turretdamage = turretdamage + 20;
-		PhaserGame.player1.gold -= 20;
-		PhaserGame.player2.gold -= 20;
+		this.player1.gold -= 20;
+		this.player2.gold -= 20;
 	}
     	
     }
 	function power5upgrade()
 	{
 		var goldneeded = 50;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
+			console.log("Bought");
 			turretdamage = turretdamage + 50;
-			PhaserGame.player1.gold -= 50;
-			PhaserGame.player2.gold -= 50;
+			this.player1.gold -= 50;
+			this.player2.gold -= 50;
 		}
 		
 	}
@@ -975,16 +1119,17 @@ var GameState = function(){
 	function gunpower1upgrade()
 	{
 		var goldneeded = 5;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletdamagevar += 5;
-			PhaserGame.player2.bulletdamagevar += 5;
-			PhaserGame.player1.gold -= 5;
-			PhaserGame.player2.gold -= 5;
+			console.log("Bought");
+			this.player1.bulletdamagevar += 5;
+			this.player2.bulletdamagevar += 5;
+			this.player1.gold -= 5;
+			this.player2.gold -= 5;
 		}
 		//turretdamage = turretdamage + 5;
 		
@@ -992,64 +1137,68 @@ var GameState = function(){
 	function gunpower2upgrade()
 	{
 		var goldneeded = 10;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletdamagevar += 10;
-			PhaserGame.player2.bulletdamagevar += 10;
-			PhaserGame.player1.gold -= 10;
-			PhaserGame.player2.gold -= 10;
+			console.log("Bought");
+			this.player1.bulletdamagevar += 10;
+			this.player2.bulletdamagevar += 10;
+			this.player1.gold -= 10;
+			this.player2.gold -= 10;
 		}
 		
 	}
 	function gunpower3upgrade()
 	{
 		var goldneeded = 15;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletdamagevar += 15;
-			PhaserGame.player2.bulletdamagevar += 15;
-			PhaserGame.player1.gold -= 15;
-			PhaserGame.player2.gold -= 15;
+			console.log("Bought");
+			this.player1.bulletdamagevar += 15;
+			this.player2.bulletdamagevar += 15;
+			this.player1.gold -= 15;
+			this.player2.gold -= 15;
 		}
 		
 	}
 	function gunpower4upgrade()
 	{
 		var goldneeded = 20;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletdamagevar += 20;
-			PhaserGame.player2.bulletdamagevar += 20;
-			PhaserGame.player1.gold -= 20;
-			PhaserGame.player2.gold -= 20;
+			console.log("Bought");
+			this.player1.bulletdamagevar += 20;
+			this.player2.bulletdamagevar += 20;
+			this.player1.gold -= 20;
+			this.player2.gold -= 20;
 		}
 		
 	}
 	function gunpower5upgrade()
 	{
 		var goldneeded = 50;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletdamagevar += 50;
-			PhaserGame.player2.bulletdamagevar += 50;
-			PhaserGame.player1.gold -= 50;
-			PhaserGame.player2.gold -= 50;
+			console.log("Bought");
+			this.player1.bulletdamagevar += 50;
+			this.player2.bulletdamagevar += 50;
+			this.player1.gold -= 50;
+			this.player2.gold -= 50;
 		}
 		
 	}
@@ -1057,80 +1206,85 @@ var GameState = function(){
 	function speed1upgrade()
 	{
 		var goldneeded = 5;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletspeed += 5;
-			PhaserGame.player2.bulletspeed += 5;
-			PhaserGame.player1.gold -= 5;
-			PhaserGame.player2.gold -= 5;
+			console.log("Bought");
+			this.player1.bulletspeed += 5;
+			this.player2.bulletspeed += 5;
+			this.player1.gold -= 5;
+			this.player2.gold -= 5;
 		}
 	}
 	
 	function speed2upgrade()
 	{
 		var goldneeded = 10;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletspeed += 10;
-			PhaserGame.player2.bulletspeed += 10;
-			PhaserGame.player1.gold -= 10;
-			PhaserGame.player2.gold -= 10;
+			console.log("Bought");
+			this.player1.bulletspeed += 10;
+			this.player2.bulletspeed += 10;
+			this.player1.gold -= 10;
+			this.player2.gold -= 10;
 		}
 	}
 	
 	function speed3upgrade()
 	{
 		var goldneeded = 15;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletspeed += 15;
-			PhaserGame.player2.bulletspeed += 15;
-			PhaserGame.player1.gold -= 15;
-			PhaserGame.player2.gold -= 15;
+			console.log("Bought");
+			this.player1.bulletspeed += 15;
+			this.player2.bulletspeed += 15;
+			this.player1.gold -= 15;
+			this.player2.gold -= 15;
 		}
 	}
 	
 	function speed4upgrade()
 	{
 		var goldneeded = 20;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletspeed += 20;
-			PhaserGame.player2.bulletspeed += 20;
-			PhaserGame.player1.gold -= 20;
-			PhaserGame.player2.gold -= 20;
+			console.log("Bought");
+			this.player1.bulletspeed += 20;
+			this.player2.bulletspeed += 20;
+			this.player1.gold -= 20;
+			this.player2.gold -= 20;
 		}
 	}
 	
 	function speed5upgrade()
 	{
 		var goldneeded = 50;
-		if(gold < goldneeded)
+		if(this.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletspeed += 50;
-			PhaserGame.player2.bulletspeed += 50;
-			PhaserGame.player1.gold -= 50;
-			PhaserGame.player2.gold -= 50;
+			console.log("Bought");
+			this.player1.bulletspeed += 50;
+			this.player2.bulletspeed += 50;
+			this.player1.gold -= 50;
+			this.player2.gold -= 50;
 		}
 	}
     
@@ -1148,6 +1302,7 @@ var GameState = function(){
     
     
     function optionClick(){
+		settingsButton.visible =! settingsButton.visible;
         option_menu.visible =! option_menu.visible;
     }
     function overOption(){
@@ -1158,6 +1313,12 @@ var GameState = function(){
        console.log('button up', arguments);
     }
     
+	function settings()
+	{
+		
+	}
+	
+	
     function helpClick(){
         help_menu.visible =! help_menu.visible;
     }
