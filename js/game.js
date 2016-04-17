@@ -49,6 +49,28 @@
 
     //buttons
     var upgradeButton;
+	
+    //turret
+    var powerButton1;
+    var powerButton2;
+    var powerButton3;
+    var powerButton4;
+    var powerButton5;
+	
+    //guns
+	
+    var gunpowerButton1;
+    var gunpowerButton2;
+    var gunpowerButton3;
+    var gunpowerButton4;
+    var gunpowerButton5;
+	
+    var gunspeedButton1;
+    var gunspeedButton2;
+    var gunspeedButton3;
+    var gunspeedButton4;
+    var gunspeedButton5;
+	
     var helpButton;
     var optionButton;
     
@@ -71,6 +93,19 @@
     //score
     var score = 0;
     var scorestate;
+    
+    //gold
+    var gold = 0;
+    var goldstate;
+	
+    //bullet damave variable
+    var bulletdamagevar = 0;
+	
+    //bullet speed variable
+    var bulletspeed = 0;
+	
+    //turret damage variable
+    var turretdamege = 50;
 
 ////////////////////////////////////////////////////////////////////
 //  eurecaClient Setup
@@ -206,8 +241,8 @@ Player.prototype.fireRifle = function(){
 
             var bullet = this.game.add.sprite(this.alien.x + 50, this.alien.y + 53, 'rifle_projectile');
             this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
-            bullet.body.velocity.x = 600;
-            bullet.damage = 35;
+            bullet.body.velocity.x = 600 + bulletspeed;
+            bullet.damage = 35 + bulletdamagevar;
             this.rifleBullets.push(bullet);
             
     }
@@ -229,8 +264,8 @@ Player.prototype.fireMachine = function(){
 
             var bullet = this.game.add.sprite(this.alien.x + 50, this.alien.y + 53, 'machine_projectile');
             this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
-            bullet.body.velocity.x = 600;
-            bullet.damage = 15;
+            bullet.body.velocity.x = 600 + bulletspeed;
+            bullet.damage = 15 + bulletdamagevar;
             this.mBullets.push(bullet);
             
     }
@@ -251,8 +286,8 @@ Player.prototype.fireRocket = function(){
 
             var bullet = this.game.add.sprite(this.alien.x + 50, this.alien.y + 53, 'rocket_projectile');
             this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
-            bullet.body.velocity.x = 400;
-            bullet.damage = 100;
+            bullet.body.velocity.x = 400 + bulletspeed;
+            bullet.damage = 100 + bulletdamagevar;
             this.mBullets.push(bullet);
             
     }
@@ -375,7 +410,7 @@ Turret.prototype.fireTurret = function(){
             var bullet = this.game.add.sprite(this.turret_sprite.x + 75, this.turret_sprite.y + 20, 'rifle_projectile');
             this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
             bullet.body.velocity.x = 400;
-            bullet.damage = 100;
+            bullet.damage = turretdamage;
             this.tBullets.push(bullet);
             
     }
@@ -398,6 +433,7 @@ var GameState = function(){
     this.round = roundstate;
     this.map = mapstate;
     this.score = scorestate;
+    this.gold = goldstate;
 };
 
 ////////////////////////////////////////////////////////////////////
@@ -456,6 +492,21 @@ var GameState = function(){
             game.load.spritesheet('upgrade_button_spritesheet', asset_location + 'upgrade_button_spritesheet.png', 193, 80);
             game.load.spritesheet('option_button_spritesheet', asset_location + 'option_button_spritesheet.png', 193, 80);
             game.load.spritesheet('help_button_spritesheet', asset_location + 'help_button_spritesheet.png', 193, 80);
+            
+            game.load.spritesheet('upgrade_button_spritesheet', asset_location + 'upgrade_button_spritesheet.png', 193, 80);
+            game.load.spritesheet('option_button_spritesheet', asset_location + 'option_button_spritesheet.png', 193, 80);
+            game.load.spritesheet('help_button_spritesheet', asset_location + 'help_button_spritesheet.png', 193, 80);
+	    game.load.image('power1button',asset_location + 'power1button.jpg');
+	    game.load.image('power2button',asset_location + 'power2button.jpg');
+	    game.load.image('power3button',asset_location + 'power3button.jpg');
+	    game.load.image('power4button',asset_location + 'power4button.jpg');
+	    game.load.image('power5button',asset_location + 'power5button.jpg');
+			
+	    game.load.image('speed1button',asset_location + 'speed1button.jpg');
+	    game.load.image('speed2button',asset_location + 'speed2button.jpg');
+	    game.load.image('speed3button',asset_location + 'speed3button.jpg');
+	    game.load.image('speed4button',asset_location + 'speed4button.jpg');
+	    game.load.image('speed5button',asset_location + 'speed5button.jpg');
             
             //menus
             game.load.image('upgrade_menu', asset_location + 'upgrade_menu.png');
@@ -542,6 +593,63 @@ var GameState = function(){
             upgrade_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'upgrade_menu'); //makes upgrade menu
             upgrade_menu.visible =! upgrade_menu.visible;
             
+            //turret upgrade buttons
+			
+	    powerButton1 = game.add.button(765,255,"power1button",power1upgrade,this,0);
+	    powerButton1.visible =! powerButton1.visible;
+			
+	    powerButton2 = game.add.button(774,330,"power2button",power2upgrade,this,0);
+	    powerButton2.visible =! powerButton2.visible;
+			
+	    powerButton3 = game.add.button(770,410,"power3button",power3upgrade,this,0);
+	    powerButton3.visible =! powerButton3.visible;
+			
+	    powerButton4 = game.add.button(775,490,"power4button",power4upgrade,this,0);
+	    powerButton4.visible =! powerButton4.visible;
+			
+	    powerButton5 = game.add.button(770,565,"power5button",power5upgrade,this,0);
+	    powerButton5.visible =! powerButton5.visible;
+            
+	    //gun upgrade buttons
+			
+	    gunspeedButton1 = game.add.button(920,255,"speed1button",speed1upgrade,this,0);
+	    gunspeedButton1.visible =! gunspeedButton1.visible;
+			
+	    gunspeedButton2 = game.add.button(915,333,"speed2button",speed2upgrade,this,0);
+	    gunspeedButton2.visible =! gunspeedButton2.visible;
+			
+	    gunspeedButton3 = game.add.button(922,405,"speed3button",speed3upgrade,this,0);
+	    gunspeedButton3.visible =! gunspeedButton3.visible;
+			
+	    gunspeedButton4 = game.add.button(922,490,"speed4button",speed4upgrade,this,0);
+	    gunspeedButton4.visible =! gunspeedButton4.visible;
+			
+	    gunspeedButton5 = game.add.button(922,565,"speed5button",speed5upgrade,this,0);
+	    gunspeedButton5.visible =! gunspeedButton5.visible;
+			
+			
+	    gunpowerButton1 = game.add.button(1030,255,"power1button",gunpower1upgrade,this,0);
+	    gunpowerButton1.visible =! gunpowerButton1.visible;
+			
+	    gunpowerButton2 = game.add.button(1036,333,"power2button",gunpower2upgrade,this,0);
+	    gunpowerButton2.visible =! gunpowerButton2.visible;
+			
+	    gunpowerButton3 = game.add.button(1030,405,"power3button",gunpower3upgrade,this,0);
+	    gunpowerButton3.visible =! gunpowerButton3.visible;
+			
+	    gunpowerButton4 = game.add.button(1035,490,"power4button",gunpower4upgrade,this,0);
+	    gunpowerButton4.visible =! gunpowerButton4.visible;
+			
+	    gunpowerButton5 = game.add.button(1030,565,"power5button",gunpower5upgrade,this,0);
+	    gunpowerButton5.visible =! gunpowerButton5.visible;
+			
+			
+	    //wall upgrade buttons
+            
+            
+            
+            
+            
             option_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'option_menu');
             option_menu.visible =! option_menu.visible;
             
@@ -554,7 +662,8 @@ var GameState = function(){
             wallHealth = this.add.text(220,35, "Wall Health: " + wall.health, style);
             mapstate  = game.add.text(1680,20,map,style2);
             roundstate = game.add.text(1700,42,round,style2);
-            scorestate = game.add.text(1500,25,score,style);           
+            scorestate = game.add.text(1500,25,score,style);
+            goldstate = game.add.text(1400,850,gold,style);
             
             // Ending and Looping
             
@@ -671,6 +780,7 @@ var GameState = function(){
             roundstate.setText(round);
             mapstate.setText(map);
             scorestate.setText(score);
+            goldstate.setText(gold);
           
         
     }
@@ -757,11 +867,279 @@ var GameState = function(){
 ////////////////////////////////////////////////////////////////////
 //  Button Interfaces
 ////////////////////////////////////////////////////////////////////
-    function upgradeClick(){
+    function upgradeClick()
+    {
         //on click pull up Upgrade Menu
+		
+	//turret
+		
+	powerButton1.visible =! powerButton1.visible;
+	powerButton2.visible =! powerButton2.visible;
+	powerButton3.visible =! powerButton3.visible;
+	powerButton4.visible =! powerButton4.visible;
+	powerButton5.visible =! powerButton5.visible;
+		
+	//gun
+		
+	gunpowerButton1.visible =! gunpowerButton1.visible;
+	gunpowerButton2.visible =! gunpowerButton2.visible;
+	gunpowerButton3.visible =! gunpowerButton3.visible;
+	gunpowerButton4.visible =! gunpowerButton4.visible;
+	gunpowerButton5.visible =! gunpowerButton5.visible;
+		
+	gunspeedButton1.visible =! gunspeedButton1.visible;
+	gunspeedButton2.visible =! gunspeedButton2.visible;
+	gunspeedButton3.visible =! gunspeedButton3.visible;
+	gunspeedButton4.visible =! gunspeedButton4.visible;
+	gunspeedButton5.visible =! gunspeedButton5.visible;
+		
+		
+	//wall
+		
+		
         upgrade_menu.visible =! upgrade_menu.visible;
         //now start displaying upgrade menu
+		
     }
+	
+   //turretupgrades
+	
+    function power1upgrade()
+    {
+	var goldneeded = 5;
+	if(gold < goldneeded)
+	{
+		//
+	}
+	else
+	{
+		turretdamege = turretdamege + 5;
+		gold = gold - 5;
+	}
+	//turretdamege = turretdamege + 5;
+	
+    
+    }
+    
+    function power2upgrade()
+    {
+	var goldneeded = 10;
+	if(gold < goldneeded)
+	{
+		//
+	}
+	else
+	{
+		turretdamege = turretdamege + 10;
+		gold = gold - 10;
+	}
+    	
+    }
+    function power3upgrade()
+    {
+	var goldneeded = 15;
+	if(gold < goldneeded)
+	{
+		//
+	}
+	else
+	{
+		turretdamege = turretdamege + 15;
+		gold = gold - 15;
+	}
+    	
+    }
+    
+    function power4upgrade()
+    {
+	var goldneeded = 20;
+	if(gold < goldneeded)
+	{
+		//
+	}
+	else
+	{
+		turretdamege = turretdamege + 20;
+		gold = gold - 20;
+	}
+    	
+    }
+	function power5upgrade()
+	{
+		var goldneeded = 50;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretdamege = turretdamege + 50;
+			gold = gold - 50;
+		}
+		
+	}
+	
+	
+	//gun upgrades
+	
+	function gunpower1upgrade()
+	{
+		var goldneeded = 5;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretdamege = turretdamege + 5;
+			gold = gold - 5;
+		}
+		//turretdamege = turretdamege + 5;
+		
+	}
+	function gunpower2upgrade()
+	{
+		var goldneeded = 10;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretdamege = turretdamege + 10;
+			gold = gold - 10;
+		}
+		
+	}
+	function gunpower3upgrade()
+	{
+		var goldneeded = 15;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretdamege = turretdamege + 15;
+			gold = gold - 15;
+		}
+		
+	}
+	function gunpower4upgrade()
+	{
+		var goldneeded = 20;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretdamege = turretdamege + 20;
+			gold = gold - 20;
+		}
+		
+	}
+	function gunpower5upgrade()
+	{
+		var goldneeded = 50;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretdamege = turretdamege + 50;
+			gold = gold - 50;
+		}
+		
+	}
+	
+	function speed1upgrade()
+	{
+		var goldneeded = 5;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			bulletspeed = bulletspeed + 5;
+			gold = gold - 5;
+		}
+	}
+	
+	function speed2upgrade()
+	{
+		var goldneeded = 10;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			bulletspeed = bulletspeed + 10;
+			gold = gold - 10;
+		}
+	}
+	
+	function speed2upgrade()
+	{
+		var goldneeded = 10;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			bulletspeed = bulletspeed + 10;
+			gold = gold - 10;
+		}
+	}
+	
+	function speed3upgrade()
+	{
+		var goldneeded = 15;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			bulletspeed = bulletspeed + 15;
+			gold = gold - 15;
+		}
+	}
+	
+	function speed4upgrade()
+	{
+		var goldneeded = 20;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			bulletspeed = bulletspeed + 20;
+			gold = gold - 20;
+		}
+	}
+	
+	function speed5upgrade()
+	{
+		var goldneeded = 50;
+		if(gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			bulletspeed = bulletspeed + 50;
+			gold = gold - 50;
+		}
+	}
+    
+ 
+ 
     function overUpgrade(){
         //highlight upgrade button
     }
