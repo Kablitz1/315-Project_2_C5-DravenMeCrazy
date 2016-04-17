@@ -98,14 +98,8 @@
     var gold = 0;
     var goldstate;
 	
-    //bullet damave variable
-    var bulletdamagevar = 0;
-	
-    //bullet speed variable
-    var bulletspeed = 0;
-	
     //turret damage variable
-    var turretdamege = 50;
+    var turretdamage = 50;
 
 ////////////////////////////////////////////////////////////////////
 //  eurecaClient Setup
@@ -153,7 +147,7 @@ var eurecaClientSetup = function(){
 		else
 			console.log("HELLO WORLD" + myId);*/
 	}
-    /*
+ /*
 //basically any functions that server needs to call will be defined here    
     eurecaClient.exports.updateState = function(id, state){
         PhaserGame.update();
@@ -212,7 +206,14 @@ var Player = function(game, player, index){
     this.alien.body.collideWorldBounds = true;
     
     this.currentWeapon = 0;
-
+	
+	//upgrades
+	this.bulletdamagevar = 0;
+	this.bulletspeed = 0;
+	
+	//gold
+	this.gold = 0;
+	
     //making rifle bullets
     this.rifleBullets  = [];
     this.riflenextShotAt = 0;
@@ -241,8 +242,8 @@ Player.prototype.fireRifle = function(){
 
             var bullet = this.game.add.sprite(this.alien.x + 50, this.alien.y + 53, 'rifle_projectile');
             this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
-            bullet.body.velocity.x = 600 + bulletspeed;
-            bullet.damage = 35 + bulletdamagevar;
+            bullet.body.velocity.x = 600 + this.bulletspeed;
+            bullet.damage = 35 + this.bulletdamagevar;
             this.rifleBullets.push(bullet);
             
     }
@@ -264,8 +265,8 @@ Player.prototype.fireMachine = function(){
 
             var bullet = this.game.add.sprite(this.alien.x + 50, this.alien.y + 53, 'machine_projectile');
             this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
-            bullet.body.velocity.x = 600 + bulletspeed;
-            bullet.damage = 15 + bulletdamagevar;
+            bullet.body.velocity.x = 600 + this.bulletspeed;
+            bullet.damage = 15 + this.bulletdamagevar;
             this.mBullets.push(bullet);
             
     }
@@ -286,8 +287,8 @@ Player.prototype.fireRocket = function(){
 
             var bullet = this.game.add.sprite(this.alien.x + 50, this.alien.y + 53, 'rocket_projectile');
             this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
-            bullet.body.velocity.x = 400 + bulletspeed;
-            bullet.damage = 100 + bulletdamagevar;
+            bullet.body.velocity.x = 400 + this.bulletspeed;
+            bullet.damage = 100 + this.bulletdamagevar;
             this.mBullets.push(bullet);
             
     }
@@ -801,6 +802,10 @@ var GameState = function(){
         
         projectile.kill();
         mobs.health -= projectile.damage;
+		
+		PhaserGame.player1.gold += 1;
+		PhaserGame.player2.gold += 1;
+		
         if (mobs.health <= 0)
         {
             mobs.destroy();
@@ -913,10 +918,11 @@ var GameState = function(){
 	}
 	else
 	{
-		turretdamege = turretdamege + 5;
-		gold = gold - 5;
+		turretdamage = turretdamage + 5;
+		PhaserGame.player1.gold -= 5;
+		PhaserGame.player2.gold -= 5;
 	}
-	//turretdamege = turretdamege + 5;
+	//turretdamage = turretdamage + 5;
 	
     
     }
@@ -930,8 +936,9 @@ var GameState = function(){
 	}
 	else
 	{
-		turretdamege = turretdamege + 10;
-		gold = gold - 10;
+		turretdamage = turretdamage + 10;
+		PhaserGame.player1.gold -= 10;
+		PhaserGame.player2.gold -= 10;
 	}
     	
     }
@@ -944,8 +951,9 @@ var GameState = function(){
 	}
 	else
 	{
-		turretdamege = turretdamege + 15;
-		gold = gold - 15;
+		turretdamage = turretdamage + 15;
+		PhaserGame.player1.gold -= 15;
+		PhaserGame.player2.gold -= 15;
 	}
     	
     }
@@ -959,8 +967,9 @@ var GameState = function(){
 	}
 	else
 	{
-		turretdamege = turretdamege + 20;
-		gold = gold - 20;
+		turretdamage = turretdamage + 20;
+		PhaserGame.player1.gold -= 20;
+		PhaserGame.player2.gold -= 20;
 	}
     	
     }
@@ -973,8 +982,9 @@ var GameState = function(){
 		}
 		else
 		{
-			turretdamege = turretdamege + 50;
-			gold = gold - 50;
+			turretdamage = turretdamage + 50;
+			PhaserGame.player1.gold -= 50;
+			PhaserGame.player2.gold -= 50;
 		}
 		
 	}
@@ -991,10 +1001,12 @@ var GameState = function(){
 		}
 		else
 		{
-			turretdamege = turretdamege + 5;
-			gold = gold - 5;
+			PhaserGame.player1.bulletdamagevar += 5;
+			PhaserGame.player2.bulletdamagevar += 5;
+			PhaserGame.player1.gold -= 5;
+			PhaserGame.player2.gold -= 5;
 		}
-		//turretdamege = turretdamege + 5;
+		//turretdamage = turretdamage + 5;
 		
 	}
 	function gunpower2upgrade()
@@ -1006,8 +1018,10 @@ var GameState = function(){
 		}
 		else
 		{
-			turretdamege = turretdamege + 10;
-			gold = gold - 10;
+			PhaserGame.player1.bulletdamagevar += 10;
+			PhaserGame.player2.bulletdamagevar += 10;
+			PhaserGame.player1.gold -= 10;
+			PhaserGame.player2.gold -= 10;
 		}
 		
 	}
@@ -1020,8 +1034,10 @@ var GameState = function(){
 		}
 		else
 		{
-			turretdamege = turretdamege + 15;
-			gold = gold - 15;
+			PhaserGame.player1.bulletdamagevar += 15;
+			PhaserGame.player2.bulletdamagevar += 15;
+			PhaserGame.player1.gold -= 15;
+			PhaserGame.player2.gold -= 15;
 		}
 		
 	}
@@ -1034,8 +1050,10 @@ var GameState = function(){
 		}
 		else
 		{
-			turretdamege = turretdamege + 20;
-			gold = gold - 20;
+			PhaserGame.player1.bulletdamagevar += 20;
+			PhaserGame.player2.bulletdamagevar += 20;
+			PhaserGame.player1.gold -= 20;
+			PhaserGame.player2.gold -= 20;
 		}
 		
 	}
@@ -1048,8 +1066,10 @@ var GameState = function(){
 		}
 		else
 		{
-			turretdamege = turretdamege + 50;
-			gold = gold - 50;
+			PhaserGame.player1.bulletdamagevar += 50;
+			PhaserGame.player2.bulletdamagevar += 50;
+			PhaserGame.player1.gold -= 50;
+			PhaserGame.player2.gold -= 50;
 		}
 		
 	}
@@ -1063,8 +1083,10 @@ var GameState = function(){
 		}
 		else
 		{
-			bulletspeed = bulletspeed + 5;
-			gold = gold - 5;
+			PhaserGame.player1.bulletspeed += 5;
+			PhaserGame.player2.bulletspeed += 5;
+			PhaserGame.player1.gold -= 5;
+			PhaserGame.player2.gold -= 5;
 		}
 	}
 	
@@ -1077,22 +1099,10 @@ var GameState = function(){
 		}
 		else
 		{
-			bulletspeed = bulletspeed + 10;
-			gold = gold - 10;
-		}
-	}
-	
-	function speed2upgrade()
-	{
-		var goldneeded = 10;
-		if(gold < goldneeded)
-		{
-			//
-		}
-		else
-		{
-			bulletspeed = bulletspeed + 10;
-			gold = gold - 10;
+			PhaserGame.player1.bulletspeed += 10;
+			PhaserGame.player2.bulletspeed += 10;
+			PhaserGame.player1.gold -= 10;
+			PhaserGame.player2.gold -= 10;
 		}
 	}
 	
@@ -1105,8 +1115,10 @@ var GameState = function(){
 		}
 		else
 		{
-			bulletspeed = bulletspeed + 15;
-			gold = gold - 15;
+			PhaserGame.player1.bulletspeed += 15;
+			PhaserGame.player2.bulletspeed += 15;
+			PhaserGame.player1.gold -= 15;
+			PhaserGame.player2.gold -= 15;
 		}
 	}
 	
@@ -1119,8 +1131,10 @@ var GameState = function(){
 		}
 		else
 		{
-			bulletspeed = bulletspeed + 20;
-			gold = gold - 20;
+			PhaserGame.player1.bulletspeed += 20;
+			PhaserGame.player2.bulletspeed += 20;
+			PhaserGame.player1.gold -= 20;
+			PhaserGame.player2.gold -= 20;
 		}
 	}
 	
@@ -1133,8 +1147,10 @@ var GameState = function(){
 		}
 		else
 		{
-			bulletspeed = bulletspeed + 50;
-			gold = gold - 50;
+			PhaserGame.player1.bulletspeed += 50;
+			PhaserGame.player2.bulletspeed += 50;
+			PhaserGame.player1.gold -= 50;
+			PhaserGame.player2.gold -= 50;
 		}
 	}
     
