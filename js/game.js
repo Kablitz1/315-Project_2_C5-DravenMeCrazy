@@ -135,17 +135,28 @@ var eurecaClientSetup = function(){
 		if(game != null){
 			console.log("Set Game Properly");
 		}
-		//game.preload();
+		game.boot();
+		/*preload();
 		console.log("Preloading");
-		//create();
+		create();
 		if(iplayerIndex == 1 ){
 			console.log("Spawning player: "+ iplayerIndex);
-			game.player1 = new Player(game, myId, 1);
+			player1 = new Player(game, myId, 1);
+			player2 = new Player(game, clientId, 2);
+			game.world.bringToTop(player1.alien);
+			game.world.bringToTop(player2.alien);
 		}
 		if(iplayerIndex == 2){
 			console.log("Spawning player: "+ iplayerIndex);
-			game.player2 = new Player(game, myId, 2);
-		}
+			player2 = new Player(game, myId, 2);
+			player1 = new Player(game, clientId, 1);
+			game.world.bringToTop(player1.alien);
+			game.world.bringToTop(player2.alien);
+		}*/
+	}
+	
+	eurecaClient.exports.movePlayerUp = function(id, p_Id, eurecaId){
+		
 	}
 };
 
@@ -154,7 +165,7 @@ var eurecaClientSetup = function(){
 //  Main Player Class
 ////////////////////////////////////////////////////////////////////
 var Player = function(game, player, index){
-    
+    console.log("Game spawning player" + index);
     this.game = game;
     this.player = player;
 
@@ -623,6 +634,9 @@ Turret.prototype.update = function(){
             stateText.anchor.setTo(0.5, 0.5);
             stateText.visible = false;
 
+			
+			player1 = new Player(game, myId, 1);
+			player2 = new Player(game, myId, 2);
         };
 
 ////////////////////////////////////////////////////////////////////
@@ -684,7 +698,7 @@ if(game.player1 != null && game.player2 != null){
 			game.player2.update();
 		
         
-        if(game.game.input.keyboard.isDown(Phaser.Keyboard.J)){
+        if(game.input.keyboard.isDown(Phaser.Keyboard.J)){
              eurecaServer.helloWorld(playerIndex, myId);
         }
         
@@ -699,7 +713,7 @@ if(game.player1 != null && game.player2 != null){
             game.physics.arcade.overlap(game.player2.rBullets,mobs,collidehandler,null,game);
 
 //turret handling            
-            if(game.game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && tindex < 8){
+            if(game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && tindex < 8){
                 if(!flipFlop){
                     var newturret = new Turret(game, tindex);
                     turrets.push(newturret);
@@ -707,7 +721,7 @@ if(game.player1 != null && game.player2 != null){
                     flipFlop = true;
                 }
             }
-            if(!game.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
+            if(!game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
                 flipFlop = false;
             }
             
@@ -719,12 +733,12 @@ if(game.player1 != null && game.player2 != null){
             
             if(wallFrequency === 120)
             {
-                game.wallDamage(true);
+                wallDamage(true);
                 wallFrequency = 0;
             }
             else
             {
-                game.wallDamage(false);
+                wallDamage(false);
                 wallFrequency++;
             }
             
