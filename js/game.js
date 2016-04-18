@@ -1,18 +1,17 @@
 ////////////////////////////////////////////////////////////////////
 //  Global Variable Declerations
 ////////////////////////////////////////////////////////////////////
-    var game = new Phaser.Game(1920, 900, Phaser.AUTO, 'game');
+    //var game = new Phaser.Game(1920, 900, Phaser.AUTO, 'game');
+	var game;
     
     
     var flipFlop = false;
-    
-
-	var myId;
+  
     //players
     var player1;
     var player2;
-	var playerId;
-	//var myplayerId;
+	var myId;
+	var playerIndex;
     
     //turrets
     var turrets = [];
@@ -119,21 +118,38 @@ var eurecaClientSetup = function(){
     });
     
     //methods under "exports" become available on server side (aka heres the functions the server can call)
-    eurecaClient.exports.setID = function(id, playerIndex){
+    eurecaClient.exports.setID = function(id, iplayerIndex){
         myId = id; //unique connection ID
-        playerId = playerIndex;
-        console.log(playerId);
-        game.state.add('game', PhaserGame, true);
-        //PhaserGame.create(); //create method of game, need to define for this instance
-        //eurecaServer.handshake();
+        playerIndex = iplayerIndex;
+        console.log(playerIndex);
+        //game.state.add('game', PhaserGame, true);
         ready = true; //start handshaking
+		eurecaServer.handshake(myId, ready);
     }    
     
     eurecaClient.exports.helloWorld = function(id, p_Id, eurecaId){
 		console.log("HELLO WORLD " + p_Id);
 		console.log("HELLO WORLD " + eurecaId);
 	}
- 
+	
+	eurecaClient.exports.spawnPlayer = function(clientId, iplayerIndex){
+		game = new Phaser.Game(1920, 900, Phaser.AUTO, 'game', {preload: preload, create: create, update: update});
+		if(game != null){
+			console.log("Set Game Properly");
+		}
+		preload();
+		console.log("Preloading");
+		create();
+		if(iplayerIndex == 1 ){
+			console.log("Spawning player: "+ iplayerIndex);
+			game.player1 = new Player(game, myId, 1);
+		}
+		if(iplayerIndex == 2){
+			console.log("Spawning player: "+ iplayerIndex);
+			game.player2 = new Player(game, myId, 2);
+		}
+	}
+ /*
 //basically any functions that server needs to call will be defined here    
     eurecaClient.exports.updateState = function(id, state){
         PhaserGame.update();
@@ -162,7 +178,7 @@ var eurecaClientSetup = function(){
     };
     eurecaClient.exports.playerPlaceTurret = function(){
         
-    };
+    };*/
 };
 
 
@@ -309,7 +325,7 @@ Player.prototype.update = function(){
     }
 	
 	if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
-		eurecaServer.helloWorld(playerId);
+		eurecaServer.helloWorld(playerIndex);
 	}
 	
     
@@ -409,21 +425,21 @@ Turret.prototype.update = function(){
 //  Game State Structure
 ////////////////////////////////////////////////////////////////////
 var GameState = function(){
-    this.mobs = mobs;
-    this.turrets = turrets;
-    this.player1 = player1;
-    this.player2 = player2;
-    this.wallHealth = wallHealth;
-    this.round = roundstate;
-    this.map = mapstate;
-    this.score = scorestate;
-    this.gold = goldstate;
+    game.mobs = mobs;
+    game.turrets = turrets;
+    game.player1 = player1;
+    game.player2 = player2;
+    game.wallHealth = wallHealth;
+    game.round = roundstate;
+    game.map = mapstate;
+    game.score = scorestate;
+    game.gold = goldstate;
 };
 
 ////////////////////////////////////////////////////////////////////
 //  Main Game Loop
 ////////////////////////////////////////////////////////////////////
-    var PhaserGame = function () {
+    /*var PhaserGame = function () {
 
         //this.background = null;
 
@@ -440,17 +456,20 @@ var GameState = function(){
 
     };
 
-    PhaserGame.prototype = {
+    PhaserGame.prototype = {*/
         
 ////////////////////////////////////////////////////////////////////
 //  Preload
 ////////////////////////////////////////////////////////////////////
-        preload: function () {
-
+        function preload() {
+			console.log("Preload being called...");
+			if(game != null){
+				console.log("GAME IS NOT NULL DAMMIT");
+			}
             var asset_location = 'assets/'; //uncomment for cloud9
             //var asset_location = ''; //uncomment for compute
             
-            this.load.crossOrigin = 'anonymous';
+            game.load.crossOrigin = 'Anonymous';
 
             game.load.image('space_background', asset_location + 'space_background.jpg');
             
@@ -462,9 +481,9 @@ var GameState = function(){
             game.load.image('turret_sprite', asset_location + 'turret_sprite.png');
             
             //projectiles
-            this.load.spritesheet('rifle_projectile',asset_location + 'rifle_projectile.png');
-            this.load.spritesheet('machine_projectile',asset_location + 'machine_projectile.png');
-            this.load.spritesheet('rocket_projectile',asset_location + 'rocket_projectile.png');
+            game.load.spritesheet('rifle_projectile',asset_location + 'rifle_projectile.png');
+            game.load.spritesheet('machine_projectile',asset_location + 'machine_projectile.png');
+            game.load.spritesheet('rocket_projectile',asset_location + 'rocket_projectile.png');
             
             //UI 
             game.load.image('bottom_boundry', asset_location + 'bottom_boundry.png');
@@ -499,46 +518,44 @@ var GameState = function(){
             game.load.image('option_menu', asset_location + 'options_menu.png');
             game.load.image('help_menu', asset_location + 'help_menu.png');
 
-        },
+        };
 
 
 ////////////////////////////////////////////////////////////////////
 //  Create
 ////////////////////////////////////////////////////////////////////
-        create: function () {
+        function create () {
             //eurecaClientSetup();
 //Physics & Background            
-            this.physics.startSystem(Phaser.Physics.ARCADE);  //gives the game aracde physics
+            game.physics.startSystem(Phaser.Physics.ARCADE);  //gives the game aracde physics
 
             background = game.add.sprite(0,0,'space_background');  //makes the background
             
-            this.add.sprite(0, 0, 'bothotbar_sprite');//makes bottom hotbar
-            this.add.sprite(0, 0, 'lanes_top_sprite');//makes top and lanes
+            game.add.sprite(0, 0, 'bothotbar_sprite');//makes bottom hotbar
+            game.add.sprite(0, 0, 'lanes_top_sprite');//makes top and lanes
             
             
-            wall = this.add.sprite(0, 0, 'wall_moblane_sprite');//makes wall and moblanes
+            wall = game.add.sprite(0, 0, 'wall_moblane_sprite');//makes wall and moblanes
             //giving wall health attributes
             wall.health = 100;
           
 //Making Buttons
-            upgradeButton = game.add.button(game.world.centerX -100, game.world.height - 100,'upgrade_button_spritesheet', upgradeClick, this, 2, 1, 0); //2, 1, 0 are frames of spritesheet
-            upgradeButton.onInputOver.add(overUpgrade, this); //when button is hovered over
-            upgradeButton.onInputOut.add(outUpgrade, this); //when button is not hovered over over
-            upgradeButton.onInputUp.add(upUpgrade, this); //when finished clicking
+            upgradeButton = game.add.button(game.world.centerX -100, game.world.height - 100,'upgrade_button_spritesheet', upgradeClick, game, 2, 1, 0); //2, 1, 0 are frames of spritesheet
+            upgradeButton.onInputOver.add(overUpgrade, game); //when button is hovered over
+            upgradeButton.onInputOut.add(outUpgrade, game); //when button is not hovered over over
+            upgradeButton.onInputUp.add(upUpgrade, game); //when finished clicking
             
-            optionButton = game.add.button(game.world.width - 150, game.world.height - 100,'option_button_spritesheet', optionClick, this, 2, 1, 0); //2, 1, 0 are frames of spritesheet
-            optionButton.onInputOver.add(overOption, this); //when button is hovered over
-            optionButton.onInputOut.add(outOption, this); //when button is not hovered over over
-            optionButton.onInputUp.add(upOption, this); //when finished clicking
+            optionButton = game.add.button(game.world.width - 150, game.world.height - 100,'option_button_spritesheet', optionClick, game, 2, 1, 0); //2, 1, 0 are frames of spritesheet
+            optionButton.onInputOver.add(overOption, game); //when button is hovered over
+            optionButton.onInputOut.add(outOption, game); //when button is not hovered over over
+            optionButton.onInputUp.add(upOption, game); //when finished clicking
             
-            helpButton = game.add.button(game.world.width - 350, game.world.height - 100,'help_button_spritesheet', helpClick, this, 2, 1, 0); //2, 1, 0 are frames of spritesheet
-            helpButton.onInputOver.add(overHelp, this); //when button is hovered over
-            helpButton.onInputOut.add(outHelp, this); //when button is not hovered over over
-            helpButton.onInputUp.add(upHelp, this); //when finished clicking
+            helpButton = game.add.button(game.world.width - 350, game.world.height - 100,'help_button_spritesheet', helpClick, game, 2, 1, 0); //2, 1, 0 are frames of spritesheet
+            helpButton.onInputOver.add(overHelp, game); //when button is hovered over
+            helpButton.onInputOut.add(outHelp, game); //when button is not hovered over over
+            helpButton.onInputUp.add(upHelp, game); //when finished clicking
 
-            //var myId = "unique ID1";//server assigns this
-            this.player1 = new Player(this, myId, 1);
-            this.player2 = new Player(this, myId, 2);
+            //var myId = "unique ID1";//server assigns game
 
 //Mob Physics & creation
             mobs = game.add.group();
@@ -547,9 +564,9 @@ var GameState = function(){
 
 //Keybindings
             //  Cursor keys to fly + space to fire
-            this.cursors = this.input.keyboard.createCursorKeys();
+            game.cursors = game.input.keyboard.createCursorKeys();
 
-            this.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
+            game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
 
             //  keybindings and controls
             cursors = game.input.keyboard.createCursorKeys();
@@ -581,52 +598,52 @@ var GameState = function(){
             
             //turret upgrade buttons
 			
-	    powerButton1 = game.add.button(765,255,"power1button",power1upgrade,this,0);
+	    powerButton1 = game.add.button(765,255,"power1button",power1upgrade,game,0);
 	    powerButton1.visible =! powerButton1.visible;
 			
-	    powerButton2 = game.add.button(774,330,"power2button",power2upgrade,this,0);
+	    powerButton2 = game.add.button(774,330,"power2button",power2upgrade,game,0);
 	    powerButton2.visible =! powerButton2.visible;
 			
-	    powerButton3 = game.add.button(770,410,"power3button",power3upgrade,this,0);
+	    powerButton3 = game.add.button(770,410,"power3button",power3upgrade,game,0);
 	    powerButton3.visible =! powerButton3.visible;
 			
-	    powerButton4 = game.add.button(775,490,"power4button",power4upgrade,this,0);
+	    powerButton4 = game.add.button(775,490,"power4button",power4upgrade,game,0);
 	    powerButton4.visible =! powerButton4.visible;
 			
-	    powerButton5 = game.add.button(770,565,"power5button",power5upgrade,this,0);
+	    powerButton5 = game.add.button(770,565,"power5button",power5upgrade,game,0);
 	    powerButton5.visible =! powerButton5.visible;
             
 	    //gun upgrade buttons
 			
-	    gunspeedButton1 = game.add.button(920,255,"speed1button",speed1upgrade,this,0);
+	    gunspeedButton1 = game.add.button(920,255,"speed1button",speed1upgrade,game,0);
 	    gunspeedButton1.visible =! gunspeedButton1.visible;
 			
-	    gunspeedButton2 = game.add.button(915,333,"speed2button",speed2upgrade,this,0);
+	    gunspeedButton2 = game.add.button(915,333,"speed2button",speed2upgrade,game,0);
 	    gunspeedButton2.visible =! gunspeedButton2.visible;
 			
-	    gunspeedButton3 = game.add.button(922,405,"speed3button",speed3upgrade,this,0);
+	    gunspeedButton3 = game.add.button(922,405,"speed3button",speed3upgrade,game,0);
 	    gunspeedButton3.visible =! gunspeedButton3.visible;
 			
-	    gunspeedButton4 = game.add.button(922,490,"speed4button",speed4upgrade,this,0);
+	    gunspeedButton4 = game.add.button(922,490,"speed4button",speed4upgrade,game,0);
 	    gunspeedButton4.visible =! gunspeedButton4.visible;
 			
-	    gunspeedButton5 = game.add.button(922,565,"speed5button",speed5upgrade,this,0);
+	    gunspeedButton5 = game.add.button(922,565,"speed5button",speed5upgrade,game,0);
 	    gunspeedButton5.visible =! gunspeedButton5.visible;
 			
 			
-	    gunpowerButton1 = game.add.button(1030,255,"power1button",gunpower1upgrade,this,0);
+	    gunpowerButton1 = game.add.button(1030,255,"power1button",gunpower1upgrade,game,0);
 	    gunpowerButton1.visible =! gunpowerButton1.visible;
 			
-	    gunpowerButton2 = game.add.button(1036,333,"power2button",gunpower2upgrade,this,0);
+	    gunpowerButton2 = game.add.button(1036,333,"power2button",gunpower2upgrade,game,0);
 	    gunpowerButton2.visible =! gunpowerButton2.visible;
 			
-	    gunpowerButton3 = game.add.button(1030,405,"power3button",gunpower3upgrade,this,0);
+	    gunpowerButton3 = game.add.button(1030,405,"power3button",gunpower3upgrade,game,0);
 	    gunpowerButton3.visible =! gunpowerButton3.visible;
 			
-	    gunpowerButton4 = game.add.button(1035,490,"power4button",gunpower4upgrade,this,0);
+	    gunpowerButton4 = game.add.button(1035,490,"power4button",gunpower4upgrade,game,0);
 	    gunpowerButton4.visible =! gunpowerButton4.visible;
 			
-	    gunpowerButton5 = game.add.button(1030,565,"power5button",gunpower5upgrade,this,0);
+	    gunpowerButton5 = game.add.button(1030,565,"power5button",gunpower5upgrade,game,0);
 	    gunpowerButton5.visible =! gunpowerButton5.visible;
 			
 			
@@ -639,7 +656,7 @@ var GameState = function(){
             option_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'option_menu');
             option_menu.visible =! option_menu.visible;
 			
-			settingsButton = game.add.button(880,160,'settingsbutton',settings,this,0)
+			settingsButton = game.add.button(880,160,'settingsbutton',settings,game,0)
 			settingsButton.visible =! settingsButton.visible;
             
             help_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'help_menu');
@@ -648,7 +665,7 @@ var GameState = function(){
 
             var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
             var style2 = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-            wallHealth = this.add.text(220,35, "Wall Health: " + wall.health, style);
+            wallHealth = game.add.text(220,35, "Wall Health: " + wall.health, style);
             mapstate  = game.add.text(1680,20,map,style2);
             roundstate = game.add.text(1700,42,round,style2);
             scorestate = game.add.text(1500,25,score,style);
@@ -660,12 +677,12 @@ var GameState = function(){
             stateText.anchor.setTo(0.5, 0.5);
             stateText.visible = false;
 
-        },
+        };
 
 ////////////////////////////////////////////////////////////////////
 //  Wall Damage handler
 ////////////////////////////////////////////////////////////////////        
-        wallDamage: function (doDamage)
+        function wallDamage (doDamage)
         {
             //Mob/Wall Interaction Handling
             for(var i = 0; i < mobs.length; i++)
@@ -675,7 +692,7 @@ var GameState = function(){
                     mobs.getAt(i).body.velocity.set(0);
                     if(doDamage)
                     {
-                        mobs.getAt(i).frame = 1; //for some reason this framing wont work....
+                        mobs.getAt(i).frame = 1; //for some reason game framing wont work....
                         //start damaging wall
                         if(wall.health > 0)
                         {
@@ -692,7 +709,7 @@ var GameState = function(){
                                 stateText.text = "Defeated \n Click on screen to Restart Round";
                                 stateText.visible = true;
             
-                                game.input.onTap.addOnce(restartiflost,this);
+                                game.input.onTap.addOnce(restartiflost,game);
                             }
                             
                             else if(lostcount === 3)
@@ -700,7 +717,7 @@ var GameState = function(){
                                 stateText.text = "Game Over";
                                 stateText.visible = true;
                                 
-                                game.input.onTap.addOnce(gameover,this);
+                                game.input.onTap.addOnce(gameover,game);
                             }
                             
                         }
@@ -710,56 +727,58 @@ var GameState = function(){
                     mobs.getAt(i).frame = 0;
                 }
             }
-        },
+        };
 ////////////////////////////////////////////////////////////////////
 //  Gamestate Update Function
 ///////////////////////////////////////////////////////////////////
 
-        update: function () {
-        this.player1.update();
-        this.player2.update();
+        function update () {
+if(game.player1 != null && game.player2 != null){
+			game.player1.update();
+			game.player2.update();
+		
         
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.J)){
-             eurecaServer.helloWorld(playerId, myId);
+        if(game.game.input.keyboard.isDown(Phaser.Keyboard.J)){
+             eurecaServer.helloWorld(playerIndex, myId);
         }
         
         
 //Mob/Projectile Interaction Handling            
-            //for all bullets call this
-            this.physics.arcade.overlap(this.player1.rifleBullets,mobs,collidehandler,null,this); 
-            this.physics.arcade.overlap(this.player2.rifleBullets,mobs,collidehandler,null,this); 
-            this.physics.arcade.overlap(this.player1.mBullets,mobs,collidehandler,null,this); 
-            this.physics.arcade.overlap(this.player2.mBullets,mobs,collidehandler,null,this); 
-            this.physics.arcade.overlap(this.player1.rBullets,mobs,collidehandler,null,this); 
-            this.physics.arcade.overlap(this.player2.rBullets,mobs,collidehandler,null,this);
+            //for all bullets call game
+            game.physics.arcade.overlap(game.player1.rifleBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(game.player2.rifleBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(game.player1.mBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(game.player2.mBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(game.player1.rBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(game.player2.rBullets,mobs,collidehandler,null,game);
 
 //turret handling            
-            if(this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && tindex < 8){
+            if(game.game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && tindex < 8){
                 if(!flipFlop){
-                    var newturret = new Turret(this, tindex);
+                    var newturret = new Turret(game, tindex);
                     turrets.push(newturret);
                     tindex = turrets.length;
                     flipFlop = true;
                 }
             }
-            if(!this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
+            if(!game.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
                 flipFlop = false;
             }
             
             for(var i = 0; i < turrets.length; i++){
                 turrets[i].update();
-                this.physics.arcade.overlap(turrets[i].tBullets,mobs,collidehandler,null,this);
+                game.physics.arcade.overlap(turrets[i].tBullets,mobs,collidehandler,null,game);
             }
             
             
             if(wallFrequency === 120)
             {
-                this.wallDamage(true);
+                game.wallDamage(true);
                 wallFrequency = 0;
             }
             else
             {
-                this.wallDamage(false);
+                game.wallDamage(false);
                 wallFrequency++;
             }
             
@@ -769,13 +788,10 @@ var GameState = function(){
             roundstate.setText(round);
             mapstate.setText(map);
             scorestate.setText(score);
-            goldstate.setText(this.player1.gold);
-          
-        
-    }
-        
-
-    };
+            goldstate.setText(game.player1.gold);
+}     
+    };	
+//};
 
 	
 	eurecaClientSetup();
@@ -794,8 +810,8 @@ var GameState = function(){
         {
             mobs.destroy();
             score = score + 1;
-			this.player1.gold += 1;
-			this.player2.gold += 1;
+			game.player1.gold += 1;
+			game.player2.gold += 1;
             deadmobs ++;
             
             if(deadmobs === mobnumber )
@@ -806,7 +822,7 @@ var GameState = function(){
                     stateText.visible = true;
                 }
                 
-                game.input.onTap.addOnce(restart,this);
+                game.input.onTap.addOnce(restart,game);
             }            
             
         }
@@ -1031,7 +1047,7 @@ var GameState = function(){
     function power1upgrade()
     {
 	var goldneeded = 5;
-	if(this.player1.gold < goldneeded)
+	if(game.player1.gold < goldneeded)
 	{
 		//
 	}
@@ -1039,8 +1055,8 @@ var GameState = function(){
 	{
 		console.log("Bought");
 		turretdamage = turretdamage + 5;
-		this.player1.gold -= 5;
-		this.player2.gold -= 5;
+		game.player1.gold -= 5;
+		game.player2.gold -= 5;
 	}
 	//turretdamage = turretdamage + 5;
 	
@@ -1050,7 +1066,7 @@ var GameState = function(){
     function power2upgrade()
     {
 	var goldneeded = 10;
-	if(this.player1.gold < goldneeded)
+	if(game.player1.gold < goldneeded)
 	{
 		//
 	}
@@ -1058,15 +1074,15 @@ var GameState = function(){
 	{
 		console.log("Bought");
 		turretdamage = turretdamage + 10;
-		this.player1.gold -= 10;
-		this.player2.gold -= 10;
+		game.player1.gold -= 10;
+		game.player2.gold -= 10;
 	}
     	
     }
     function power3upgrade()
     {
 	var goldneeded = 15;
-	if(this.player1.gold < goldneeded)
+	if(game.player1.gold < goldneeded)
 	{
 		//
 	}
@@ -1074,8 +1090,8 @@ var GameState = function(){
 	{
 		console.log("Bought");
 		turretdamage = turretdamage + 15;
-		this.player1.gold -= 15;
-		this.player2.gold -= 15;
+		game.player1.gold -= 15;
+		game.player2.gold -= 15;
 	}
     	
     }
@@ -1083,7 +1099,7 @@ var GameState = function(){
     function power4upgrade()
     {
 	var goldneeded = 20;
-	if(this.player1.gold < goldneeded)
+	if(game.player1.gold < goldneeded)
 	{
 		//
 	}
@@ -1091,15 +1107,15 @@ var GameState = function(){
 	{
 		console.log("Bought");
 		turretdamage = turretdamage + 20;
-		this.player1.gold -= 20;
-		this.player2.gold -= 20;
+		game.player1.gold -= 20;
+		game.player2.gold -= 20;
 	}
     	
     }
 	function power5upgrade()
 	{
 		var goldneeded = 50;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
@@ -1107,8 +1123,8 @@ var GameState = function(){
 		{
 			console.log("Bought");
 			turretdamage = turretdamage + 50;
-			this.player1.gold -= 50;
-			this.player2.gold -= 50;
+			game.player1.gold -= 50;
+			game.player2.gold -= 50;
 		}
 		
 	}
@@ -1119,17 +1135,17 @@ var GameState = function(){
 	function gunpower1upgrade()
 	{
 		var goldneeded = 5;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			this.player1.bulletdamagevar += 5;
-			this.player2.bulletdamagevar += 5;
-			this.player1.gold -= 5;
-			this.player2.gold -= 5;
+			game.player1.bulletdamagevar += 5;
+			game.player2.bulletdamagevar += 5;
+			game.player1.gold -= 5;
+			game.player2.gold -= 5;
 		}
 		//turretdamage = turretdamage + 5;
 		
@@ -1137,68 +1153,68 @@ var GameState = function(){
 	function gunpower2upgrade()
 	{
 		var goldneeded = 10;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			this.player1.bulletdamagevar += 10;
-			this.player2.bulletdamagevar += 10;
-			this.player1.gold -= 10;
-			this.player2.gold -= 10;
+			game.player1.bulletdamagevar += 10;
+			game.player2.bulletdamagevar += 10;
+			game.player1.gold -= 10;
+			game.player2.gold -= 10;
 		}
 		
 	}
 	function gunpower3upgrade()
 	{
 		var goldneeded = 15;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			this.player1.bulletdamagevar += 15;
-			this.player2.bulletdamagevar += 15;
-			this.player1.gold -= 15;
-			this.player2.gold -= 15;
+			game.player1.bulletdamagevar += 15;
+			game.player2.bulletdamagevar += 15;
+			game.player1.gold -= 15;
+			game.player2.gold -= 15;
 		}
 		
 	}
 	function gunpower4upgrade()
 	{
 		var goldneeded = 20;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			this.player1.bulletdamagevar += 20;
-			this.player2.bulletdamagevar += 20;
-			this.player1.gold -= 20;
-			this.player2.gold -= 20;
+			game.player1.bulletdamagevar += 20;
+			game.player2.bulletdamagevar += 20;
+			game.player1.gold -= 20;
+			game.player2.gold -= 20;
 		}
 		
 	}
 	function gunpower5upgrade()
 	{
 		var goldneeded = 50;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			this.player1.bulletdamagevar += 50;
-			this.player2.bulletdamagevar += 50;
-			this.player1.gold -= 50;
-			this.player2.gold -= 50;
+			game.player1.bulletdamagevar += 50;
+			game.player2.bulletdamagevar += 50;
+			game.player1.gold -= 50;
+			game.player2.gold -= 50;
 		}
 		
 	}
@@ -1206,85 +1222,85 @@ var GameState = function(){
 	function speed1upgrade()
 	{
 		var goldneeded = 5;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			this.player1.bulletspeed += 5;
-			this.player2.bulletspeed += 5;
-			this.player1.gold -= 5;
-			this.player2.gold -= 5;
+			game.player1.bulletspeed += 5;
+			game.player2.bulletspeed += 5;
+			game.player1.gold -= 5;
+			game.player2.gold -= 5;
 		}
 	}
 	
 	function speed2upgrade()
 	{
 		var goldneeded = 10;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			this.player1.bulletspeed += 10;
-			this.player2.bulletspeed += 10;
-			this.player1.gold -= 10;
-			this.player2.gold -= 10;
+			game.player1.bulletspeed += 10;
+			game.player2.bulletspeed += 10;
+			game.player1.gold -= 10;
+			game.player2.gold -= 10;
 		}
 	}
 	
 	function speed3upgrade()
 	{
 		var goldneeded = 15;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			this.player1.bulletspeed += 15;
-			this.player2.bulletspeed += 15;
-			this.player1.gold -= 15;
-			this.player2.gold -= 15;
+			game.player1.bulletspeed += 15;
+			game.player2.bulletspeed += 15;
+			game.player1.gold -= 15;
+			game.player2.gold -= 15;
 		}
 	}
 	
 	function speed4upgrade()
 	{
 		var goldneeded = 20;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			this.player1.bulletspeed += 20;
-			this.player2.bulletspeed += 20;
-			this.player1.gold -= 20;
-			this.player2.gold -= 20;
+			game.player1.bulletspeed += 20;
+			game.player2.bulletspeed += 20;
+			game.player1.gold -= 20;
+			game.player2.gold -= 20;
 		}
 	}
 	
 	function speed5upgrade()
 	{
 		var goldneeded = 50;
-		if(this.player1.gold < goldneeded)
+		if(game.player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			this.player1.bulletspeed += 50;
-			this.player2.bulletspeed += 50;
-			this.player1.gold -= 50;
-			this.player2.gold -= 50;
+			game.player1.bulletspeed += 50;
+			game.player2.bulletspeed += 50;
+			game.player1.gold -= 50;
+			game.player2.gold -= 50;
 		}
 	}
     
