@@ -704,9 +704,10 @@ Turret.prototype.update = function(){
 ///////////////////////////////////////////////////////////////////
 
         function update () {
-if(game.player1 != null && game.player2 != null){
-			game.player1.update();
-			game.player2.update();
+			console.log("Trying to helloWorld");
+if(player1 != null && player2 != null){
+			player1.update();
+			player2.update();
 		
         
         if(game.input.keyboard.isDown(Phaser.Keyboard.J)){
