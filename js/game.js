@@ -155,8 +155,19 @@ var eurecaClientSetup = function(){
 		}*/
 	}
 	
-	eurecaClient.exports.movePlayerUp = function(id, p_Id, eurecaId){
-		
+	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId){
+		if(p_Id == 1){
+			if(player1.alien.body.y >= 80){
+				console.log("Changing player1 speed");
+				player1.alien.body.velocity.y = -player1.game.speed;
+			}
+		}
+		if(p_Id == 2){
+			if(player2.alien.body.y >= 80){
+				console.log("Changing player2 speed");
+				player2.alien.body.velocity.y = -player2.game.speed;
+			}
+		}
 	}
 };
 
@@ -304,9 +315,9 @@ Player.prototype.update = function(){
     }
 	
 	if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
+		console.log("Trying to helloWorld");
 		eurecaServer.helloWorld(playerIndex);
 	}
-	
     
 
 //weapon fire    
@@ -699,8 +710,13 @@ if(game.player1 != null && game.player2 != null){
 		
         
         if(game.input.keyboard.isDown(Phaser.Keyboard.J)){
+			console.log("Trying to helloWorld");
              eurecaServer.helloWorld(playerIndex, myId);
         }
+		
+		if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
+			eurecaServer.movePlayerUp(playerIndex);
+		}
         
         
 //Mob/Projectile Interaction Handling            
