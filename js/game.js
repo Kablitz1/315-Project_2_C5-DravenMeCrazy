@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //  Global Variable Declerations
 ////////////////////////////////////////////////////////////////////
-    //var game = new Phaser.Game(1920, 900, Phaser.AUTO, 'game');
 	var game;
     
     
@@ -122,9 +121,8 @@ var eurecaClientSetup = function(){
         myId = id; //unique connection ID
         playerIndex = iplayerIndex;
         console.log(playerIndex);
-        //game.state.add('game', PhaserGame, true);
         ready = true; //start handshaking
-		eurecaServer.handshake(myId, ready);
+		eurecaServer.handshake(playerIndex, ready, myId);
     }    
     
     eurecaClient.exports.helloWorld = function(id, p_Id, eurecaId){
@@ -137,9 +135,9 @@ var eurecaClientSetup = function(){
 		if(game != null){
 			console.log("Set Game Properly");
 		}
-		preload();
+		//game.preload();
 		console.log("Preloading");
-		create();
+		//create();
 		if(iplayerIndex == 1 ){
 			console.log("Spawning player: "+ iplayerIndex);
 			game.player1 = new Player(game, myId, 1);
@@ -149,36 +147,6 @@ var eurecaClientSetup = function(){
 			game.player2 = new Player(game, myId, 2);
 		}
 	}
- /*
-//basically any functions that server needs to call will be defined here    
-    eurecaClient.exports.updateState = function(id, state){
-        PhaserGame.update();
-    }
-    
-    eurecaClient.exports.startNextRound = function(startBool){
-        
-    };
-    eurecaClient.exports.playerFire = function(player_index){
-        
-    };
-    eurecaClient.exports.playerSwitchWeapon1 = function(){
-        
-    };
-    eurecaClient.exports.playerSwitchWeapon2 = function(){
-        
-    };
-    eurecaClient.exports.playerSwitchWeapon3 = function(){
-        
-    };
-    eurecaClient.exports.playerMoveUp = function(){
-        
-    };
-    eurecaClient.exports.playerMoveDown = function(){
-        
-    };
-    eurecaClient.exports.playerPlaceTurret = function(){
-        
-    };*/
 };
 
 
@@ -424,7 +392,7 @@ Turret.prototype.update = function(){
 ////////////////////////////////////////////////////////////////////
 //  Game State Structure
 ////////////////////////////////////////////////////////////////////
-var GameState = function(){
+/*var GameState = function(){
     game.mobs = mobs;
     game.turrets = turrets;
     game.player1 = player1;
@@ -434,30 +402,8 @@ var GameState = function(){
     game.map = mapstate;
     game.score = scorestate;
     game.gold = goldstate;
-};
+};*/
 
-////////////////////////////////////////////////////////////////////
-//  Main Game Loop
-////////////////////////////////////////////////////////////////////
-    /*var PhaserGame = function () {
-
-        //this.background = null;
-
-        this.player1 = null;
-        this.player2 = null;
-        this.cursors = null;
-        this.speed = 300;
-        //this.bullet = null;
-
-        this.weapons = [];
-        this.currentWeapon = 0;
-        this.weaponName = null;
-        
-
-    };
-
-    PhaserGame.prototype = {*/
-        
 ////////////////////////////////////////////////////////////////////
 //  Preload
 ////////////////////////////////////////////////////////////////////
@@ -795,7 +741,6 @@ if(game.player1 != null && game.player2 != null){
 
 	
 	eurecaClientSetup();
-    //game.state.add('game', PhaserGame, true);
     
 ////////////////////////////////////////////////////////////////////
 //  Mobs/Projectiles Collision Handler

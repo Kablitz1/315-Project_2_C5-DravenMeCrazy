@@ -65,7 +65,7 @@ eurecaServer.onDisconnect(function (conn) {
 
 var p1rdy = false;
 var p2rdy = false;
-eurecaServer.exports.handshake = function(p_Id, ready)
+eurecaServer.exports.handshake = function(p_Id, ready, myId)
 {
 	console.log("Handshaking...\n");
 	if(p_Id == 1){
@@ -81,7 +81,9 @@ eurecaServer.exports.handshake = function(p_Id, ready)
 			for (var cc in clients)
 			{		
 				console.log("Spawning for Client: " + p_Id);
-				remote.spawnPlayer(clients[cc].id, p_Id);		
+				if(myId == clients[cc].id){
+					remote.spawnPlayer(clients[cc].id, p_Id);		
+				}
 			}
 		}
 	}	
@@ -99,4 +101,4 @@ eurecaServer.exports.helloWorld = function(p_Id, eurecaId){
 	}
 };
 
-server.listen(12334);
+server.listen(12335);
