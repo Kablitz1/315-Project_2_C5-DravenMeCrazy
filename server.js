@@ -13,7 +13,7 @@ var playerIndex = 0;
 var Eureca = require('eureca.io');
 
 //ADD MORE CLIENT FUNCTIONS LATER
-var eurecaServer = new Eureca.Server({allow:['setID', 'helloWorld', 'spawnPlayer', 'movePlayerUp', 'movePlayerDown']});
+var eurecaServer = new Eureca.Server({allow:['setID', 'helloWorld', 'spawnPlayer', 'movePlayerUp', 'movePlayerDown', 'updateState']});
 
 console.log('Print Test');
 
@@ -101,28 +101,39 @@ eurecaServer.exports.helloWorld = function(p_Id, eurecaId){
 	}
 };
 
-eurecaServer.exports.movePlayerUp = function(p_Id, eurecaId){
+eurecaServer.exports.movePlayerUp = function(p_Id, eurecaId, x, y){
       for (var c in clients)
 	{
 		var remote = clients[c].remote;
 		for (var cc in clients)
 		{		
 			console.log("Calling movePlayerUp" + p_Id);
-			remote.movePlayerUp(p_Id, eurecaId);		
+			remote.movePlayerUp(p_Id, eurecaId, x, y);		
 		}
 	}
 };
 
-eurecaServer.exports.movePlayerDown = function(p_Id, eurecaId){
+eurecaServer.exports.movePlayerDown = function(p_Id, eurecaId, x, y){
       for (var c in clients)
 	{
 		var remote = clients[c].remote;
 		for (var cc in clients)
 		{		
-			console.log("Calling movePlayerDown" + p_Id);
-			remote.movePlayerDown(p_Id, eurecaId);		
+			console.log("Calling movePlayerDown" + p_Id, x, y);
+			remote.movePlayerDown(p_Id, eurecaId, x, y);		
 		}
 	}
 };
 
-server.listen(12334);
+eurecaServer.exports.updateState = function(p_Id, eurecaId, x, y){
+      for (var c in clients)
+	{
+		var remote = clients[c].remote;
+		for (var cc in clients)
+		{		
+			remote.updateState(p_Id, eurecaId, x, y);		
+		}
+	}
+};
+
+server.listen(12336);

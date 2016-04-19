@@ -131,87 +131,54 @@ var eurecaClientSetup = function(){
 	}
 	
 	eurecaClient.exports.spawnPlayer = function(clientId, iplayerIndex){
-		game = new Phaser.Game(1920, 900, Phaser.AUTO, 'game', {preload: preload, create: create, update: update});
+		game = new Phaser.Game(1920, 900, Phaser.WEBGL, 'game', {preload: preload, create: create, update: update});
 		if(game != null){
 			console.log("Set Game Properly");
 		}
 		game.boot();
-		/*preload();
-		console.log("Preloading");
-		create();
-		if(iplayerIndex == 1 ){
-			console.log("Spawning player: "+ iplayerIndex);
-			player1 = new Player(game, myId, 1);
-			player2 = new Player(game, clientId, 2);
-			game.world.bringToTop(player1.alien);
-			game.world.bringToTop(player2.alien);
-		}
-		if(iplayerIndex == 2){
-			console.log("Spawning player: "+ iplayerIndex);
-			player2 = new Player(game, myId, 2);
-			player1 = new Player(game, clientId, 1);
-			game.world.bringToTop(player1.alien);
-			game.world.bringToTop(player2.alien);
-		}*/
 	}
 	
-	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId){
-		
-		
-		
-		//player1.alien.body.velocity.set(0);
-		//player2.alien.body.velocity.set(0);
-		
+	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId, x, y){
 		if(p_Id == 1){
 			console.log("PLAYER 1 UP" + player1.alien.body.y);
+			/*player1.alien.x = x;
+			player1.alien.y = y;*/
 			player1.alien.body.velocity.y = -200;
-			
-			/*player1.alien.body.velocity.set(0);
-			if(upKey1.isDown || upKey2.isDown)
-				player1.alien.body.velocity.y = -200;*/
-			
-			/*if(player1.alien.body.y >= 80){
-				console.log("Changing player1 speed");
-				//player1.alien.body.velocity.y = -player1.game.speed;
-				//player1.alien.body.velocity.y = -200;
-				player1.alien.body.y = 100;
-			}*/
 		}
 		if(p_Id == 2){
 			console.log("PLAYER 2 UP" + player2.alien.body.y);
+			/*player2.alien.x = x;
+			player2.alien.y = y;*/
 			player2.alien.body.velocity.y = -200;
-			
-			/*player2.alien.body.velocity.set(0);
-			if(upKey1.isDown || upKey2.isDown)
-				player2.alien.body.velocity.y = -200;*/
-			
-			/*if(player2.alien.body.y >= 80){
-				console.log("Changing player2 speed");
-				//player2.alien.body.velocity.y = -player2.game.speed;
-				//player2.alien.body.velocity.y = -200;
-				player2.alien.body.y = 100;
-			}*/
 		}
 	}
 	
-	eurecaClient.exports.movePlayerDown = function(p_Id, eurecaId){
-		console.log("PLAYER 1 DOWN" + player1.alien.body.y);
-		console.log("PLAYER 2 DOWN" + player2.alien.body.y);
-		
-		//player1.alien.body.velocity.set(0);
-		//player2.alien.body.velocity.set(0);
-		
+	eurecaClient.exports.movePlayerDown = function(p_Id, eurecaId,x,y){
 		if(p_Id == 1){
-			
+			console.log("PLAYER 1 DOWN" + player1.alien.body.y);
+			/*player1.alien.x = x;
+			player1.alien.y = y;*/
 			player1.alien.body.velocity.y = 200;
 			
 		}
 		if(p_Id == 2){
-			
+			console.log("PLAYER 2 DOWN" + player2.alien.body.y);
+			/*player2.alien.x = x;
+			player2.alien.y = y;*/
 			player2.alien.body.velocity.y = 200;
-			
 		}
 	}
+	
+	eurecaClient.exports.updateState = function(p_Id, eurecaId, playerx, playery){
+		if(p_Id == 1){
+			player1.alien.x = x;
+			player1.alien.y = y;
+		}
+		if(p_Id == 2){
+			player2.alien.x = x;
+			player2.alien.y = y;
+		}
+	}	
 	
 };
 
@@ -262,7 +229,9 @@ var Player = function(game, player, index){
     this.rnextShotAt = 0;
     this.rshotDelay =1000;
 };
-
+////////////////////////////////////////////////////////////////////
+//  Rifle Projectiles
+////////////////////////////////////////////////////////////////////
 Player.prototype.fireRifle = function(){
     this.rifleBullets.length;
     if(this.riflenextShotAt > this.game.time.now){
@@ -285,7 +254,9 @@ Player.prototype.fireRifle = function(){
         this.rifleBullets = [];
     }
 }
-
+////////////////////////////////////////////////////////////////////
+//  Machine Gun Projectiles
+////////////////////////////////////////////////////////////////////
 Player.prototype.fireMachine = function(){
     
     if(this.mnextShotAt > this.game.time.now){
@@ -307,7 +278,9 @@ Player.prototype.fireMachine = function(){
         this.mBullets = [];//clear bullets
     }
 };
-
+////////////////////////////////////////////////////////////////////
+//  Rocket Projectiles
+////////////////////////////////////////////////////////////////////
 Player.prototype.fireRocket = function(){
     
     if(this.rnextShotAt > this.game.time.now){
@@ -329,31 +302,12 @@ Player.prototype.fireRocket = function(){
         this.rBullets = [];//clear bullets
     }
 };
-
+////////////////////////////////////////////////////////////////////
+//  Player update Loop
+////////////////////////////////////////////////////////////////////
 Player.prototype.update = function(){
 
     this.alien.body.velocity.set(0);
-            
-
-    if (upKey1.isDown || upKey2.isDown){
-		//console.log("UP KEY");
-        if(this.alien.body.y >= 80){
-			console.log("UP KEY");
-            //this.alien.body.velocity.y = -this.game.speed;
-			//this.alien.body.y = 500;
-			this.alien.body.velocity.y = -200;
-        }
-    }
-    else if (downKey1.isDown || downKey2.isDown){
-		//console.log("DOWN KEY");
-        if(this.alien.body.y <= this.game.world.height - 200){
-			console.log("DOWN KEY");
-            //this.alien.body.velocity.y = this.game.speed;
-			//this.alien.body.y = 100;
-			this.alien.body.velocity.y = 200;
-        }
-    }
-
 //weapon switch
     if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
 		console.log("weapon 1");
@@ -397,7 +351,9 @@ Player.prototype.update = function(){
         this.currentWeapon = 1;
     }
 };
-
+////////////////////////////////////////////////////////////////////
+//  Player Weapon Switch
+////////////////////////////////////////////////////////////////////
 Player.prototype.weaponSwitch = function(weapon){
     if(weapon == 1){
         this.currentWeapon = 1;
@@ -412,7 +368,9 @@ Player.prototype.weaponSwitch = function(weapon){
         this.alien.frame = 2;
     }
 };
-
+////////////////////////////////////////////////////////////////////
+//  Player Firing
+////////////////////////////////////////////////////////////////////
 Player.prototype.fireWeapon = function(){
     if(this.currentWeapon == 1){
             this.fireRifle();
@@ -444,7 +402,9 @@ var Turret = function(game, index){
     this.tAmmo = 1000;
 
 };
-
+////////////////////////////////////////////////////////////////////
+//  Turret Fire
+////////////////////////////////////////////////////////////////////
 Turret.prototype.fireTurret = function(){
       if(this.tnextShotAt > this.game.time.now){
         return;
@@ -463,26 +423,12 @@ Turret.prototype.fireTurret = function(){
     }
 
 };
-
+////////////////////////////////////////////////////////////////////
+//  Turret Update
+////////////////////////////////////////////////////////////////////
 Turret.prototype.update = function(){
     this.fireTurret();
 };
-
-////////////////////////////////////////////////////////////////////
-//  Game State Structure
-////////////////////////////////////////////////////////////////////
-/*var GameState = function(){
-    game.mobs = mobs;
-    game.turrets = turrets;
-    game.player1 = player1;
-    game.player2 = player2;
-    game.wallHealth = wallHealth;
-    game.round = roundstate;
-    game.map = mapstate;
-    game.score = scorestate;
-    game.gold = goldstate;
-};*/
-
 ////////////////////////////////////////////////////////////////////
 //  Preload
 ////////////////////////////////////////////////////////////////////
@@ -544,13 +490,10 @@ Turret.prototype.update = function(){
             game.load.image('help_menu', asset_location + 'help_menu.png');
 
         };
-
-
 ////////////////////////////////////////////////////////////////////
 //  Create
 ////////////////////////////////////////////////////////////////////
         function create () {
-            //eurecaClientSetup();
 //Physics & Background            
             game.physics.startSystem(Phaser.Physics.ARCADE);  //gives the game aracde physics
 
@@ -558,8 +501,7 @@ Turret.prototype.update = function(){
             
             game.add.sprite(0, 0, 'bothotbar_sprite');//makes bottom hotbar
             game.add.sprite(0, 0, 'lanes_top_sprite');//makes top and lanes
-            
-            
+
             wall = game.add.sprite(0, 0, 'wall_moblane_sprite');//makes wall and moblanes
             //giving wall health attributes
             wall.health = 100;
@@ -579,8 +521,6 @@ Turret.prototype.update = function(){
             helpButton.onInputOver.add(overHelp, game); //when button is hovered over
             helpButton.onInputOut.add(outHelp, game); //when button is not hovered over over
             helpButton.onInputUp.add(upHelp, game); //when finished clicking
-
-            //var myId = "unique ID1";//server assigns game
 
 //Mob Physics & creation
             mobs = game.add.group();
@@ -621,7 +561,7 @@ Turret.prototype.update = function(){
             upgrade_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'upgrade_menu'); //makes upgrade menu
             upgrade_menu.visible =! upgrade_menu.visible;
             
-            //turret upgrade buttons
+//turret upgrade buttons
 			
 	    powerButton1 = game.add.button(765,255,"power1button",power1upgrade,game,0);
 	    powerButton1.visible =! powerButton1.visible;
@@ -672,12 +612,7 @@ Turret.prototype.update = function(){
 	    gunpowerButton5.visible =! gunpowerButton5.visible;
 			
 			
-	    //wall upgrade buttons
-            
-            
-            
-            
-            
+//wall upgrade buttons
             option_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'option_menu');
             option_menu.visible =! option_menu.visible;
 			
@@ -761,18 +696,16 @@ Turret.prototype.update = function(){
 ///////////////////////////////////////////////////////////////////
 
         function update () {
-			//console.log("Trying to helloWorld");
 if(player1 != null && player2 != null){
-			//console.log("Trying to helloWorld");
-			//game.player1 = player1;
-			//game.player2 = player2;
 			if(playerIndex === 1){
 				player2.alien.body.velocity.set(0);
 				player1.update();
+				eurecaServer.updateState(playerIndex, myId, player1.alien.x, player1.alien.y);
 			}
 			if(playerIndex === 2){
 				player1.alien.body.velocity.set(0);
 				player2.update();
+				eurecaServer.updateState(playerIndex, myId, player2.alien.x, player2.alien.y);
 			}
 		
         
@@ -781,14 +714,24 @@ if(player1 != null && player2 != null){
              eurecaServer.helloWorld(playerIndex, myId);
         }
 		
-		//eurecaServer.movePlayerUp(playerIndex, myId);
+		
 		
 		if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
-			eurecaServer.movePlayerUp(playerIndex, myId);
+			if(playerIndex ==1){
+				eurecaServer.movePlayerUp(playerIndex, myId, player1.alien.x, player1.alien.y);
+			}
+			if(playerIndex ==2){
+				eurecaServer.movePlayerUp(playerIndex, myId, player2.alien.x, player2.alien.y);
+			}
 		}
 		
 		if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) || this.game.input.keyboard.isDown(Phaser.Keyboard.S)){
-			eurecaServer.movePlayerDown(playerIndex, myId);
+			if(playerIndex ==1){
+				eurecaServer.movePlayerDown(playerIndex, myId, player1.alien.x, player1.alien.y);
+			}
+			if(playerIndex ==2){
+				eurecaServer.movePlayerDown(playerIndex, myId, player2.alien.x, player2.alien.y);
+			}
 		}
         
         
@@ -840,7 +783,6 @@ if(player1 != null && player2 != null){
             goldstate.setText(player1.gold);
 }     
     };	
-//};
 
 	
 	eurecaClientSetup();
