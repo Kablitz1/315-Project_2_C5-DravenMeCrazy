@@ -288,7 +288,7 @@ Player.prototype.fireRocket = function(){
 
 Player.prototype.update = function(){
      this.alien.body.velocity.set(0);
-            
+     /*       
     if (upKey1.isDown || upKey2.isDown){
         if(this.alien.body.y >= 80){
             this.alien.body.velocity.y = -this.game.speed;
@@ -298,7 +298,7 @@ Player.prototype.update = function(){
         if(this.alien.body.y <= this.game.world.height - 200){
             this.alien.body.velocity.y = this.game.speed;
         }
-    }
+    }*/
 
 //weapon switch
     if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){

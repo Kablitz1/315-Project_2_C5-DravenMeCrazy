@@ -113,4 +113,4 @@ eurecaServer.exports.movePlayerUp = function(p_Id, eurecaId){
 	}
 };
 
-server.listen(12335);
+server.listen(12334);
