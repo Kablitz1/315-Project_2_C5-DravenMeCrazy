@@ -156,19 +156,63 @@ var eurecaClientSetup = function(){
 	}
 	
 	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId){
+		
+		
+		
+		//player1.alien.body.velocity.set(0);
+		//player2.alien.body.velocity.set(0);
+		
 		if(p_Id == 1){
-			if(player1.alien.body.y >= 80){
+			console.log("PLAYER 1 UP" + player1.alien.body.y);
+			player1.alien.body.velocity.y = -200;
+			
+			/*player1.alien.body.velocity.set(0);
+			if(upKey1.isDown || upKey2.isDown)
+				player1.alien.body.velocity.y = -200;*/
+			
+			/*if(player1.alien.body.y >= 80){
 				console.log("Changing player1 speed");
-				player1.alien.body.velocity.y = -player1.game.speed;
-			}
+				//player1.alien.body.velocity.y = -player1.game.speed;
+				//player1.alien.body.velocity.y = -200;
+				player1.alien.body.y = 100;
+			}*/
 		}
 		if(p_Id == 2){
-			if(player2.alien.body.y >= 80){
+			console.log("PLAYER 2 UP" + player2.alien.body.y);
+			player2.alien.body.velocity.y = -200;
+			
+			/*player2.alien.body.velocity.set(0);
+			if(upKey1.isDown || upKey2.isDown)
+				player2.alien.body.velocity.y = -200;*/
+			
+			/*if(player2.alien.body.y >= 80){
 				console.log("Changing player2 speed");
-				player2.alien.body.velocity.y = -player2.game.speed;
-			}
+				//player2.alien.body.velocity.y = -player2.game.speed;
+				//player2.alien.body.velocity.y = -200;
+				player2.alien.body.y = 100;
+			}*/
 		}
 	}
+	
+	eurecaClient.exports.movePlayerDown = function(p_Id, eurecaId){
+		console.log("PLAYER 1 DOWN" + player1.alien.body.y);
+		console.log("PLAYER 2 DOWN" + player2.alien.body.y);
+		
+		//player1.alien.body.velocity.set(0);
+		//player2.alien.body.velocity.set(0);
+		
+		if(p_Id == 1){
+			
+			player1.alien.body.velocity.y = 200;
+			
+		}
+		if(p_Id == 2){
+			
+			player2.alien.body.velocity.y = 200;
+			
+		}
+	}
+	
 };
 
 
@@ -186,7 +230,7 @@ var Player = function(game, player, index){
         this.alien = game.add.sprite(27,game.world.height-400, 'alien_sprite');
     }
     else if(index === 2){ //player 2
-        this.alien = game.add.sprite(125,game.world.height-500, 'alien_sprite');
+        this.alien = game.add.sprite(125,game.world.height-400, 'alien_sprite');
     }
     this.alien.enableBody = true;
     this.game.physics.arcade.enable(this.alien); 
@@ -287,29 +331,42 @@ Player.prototype.fireRocket = function(){
 };
 
 Player.prototype.update = function(){
-     this.alien.body.velocity.set(0);
-     /*       
+
+    this.alien.body.velocity.set(0);
+            
+
     if (upKey1.isDown || upKey2.isDown){
+		//console.log("UP KEY");
         if(this.alien.body.y >= 80){
-            this.alien.body.velocity.y = -this.game.speed;
+			console.log("UP KEY");
+            //this.alien.body.velocity.y = -this.game.speed;
+			//this.alien.body.y = 500;
+			this.alien.body.velocity.y = -200;
         }
     }
     else if (downKey1.isDown || downKey2.isDown){
+		//console.log("DOWN KEY");
         if(this.alien.body.y <= this.game.world.height - 200){
-            this.alien.body.velocity.y = this.game.speed;
+			console.log("DOWN KEY");
+            //this.alien.body.velocity.y = this.game.speed;
+			//this.alien.body.y = 100;
+			this.alien.body.velocity.y = 200;
         }
-    }*/
+    }
 
 //weapon switch
     if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
+		console.log("weapon 1");
         this.currentWeapon = 1;
         this.alien.frame = 0;
     }
     else if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+		console.log("weapon 2");
         this.currentWeapon = 2;
         this.alien.frame = 1;
     }
     else if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
+		console.log("weapon 3");
         this.currentWeapon = 3;
         this.alien.frame = 2;
     }
@@ -704,10 +761,19 @@ Turret.prototype.update = function(){
 ///////////////////////////////////////////////////////////////////
 
         function update () {
-			console.log("Trying to helloWorld");
+			//console.log("Trying to helloWorld");
 if(player1 != null && player2 != null){
-			player1.update();
-			player2.update();
+			//console.log("Trying to helloWorld");
+			//game.player1 = player1;
+			//game.player2 = player2;
+			if(playerIndex === 1){
+				player2.alien.body.velocity.set(0);
+				player1.update();
+			}
+			if(playerIndex === 2){
+				player1.alien.body.velocity.set(0);
+				player2.update();
+			}
 		
         
         if(game.input.keyboard.isDown(Phaser.Keyboard.J)){
@@ -715,19 +781,25 @@ if(player1 != null && player2 != null){
              eurecaServer.helloWorld(playerIndex, myId);
         }
 		
-		if(this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
-			eurecaServer.movePlayerUp(playerIndex);
+		//eurecaServer.movePlayerUp(playerIndex, myId);
+		
+		if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
+			eurecaServer.movePlayerUp(playerIndex, myId);
+		}
+		
+		if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) || this.game.input.keyboard.isDown(Phaser.Keyboard.S)){
+			eurecaServer.movePlayerDown(playerIndex, myId);
 		}
         
         
 //Mob/Projectile Interaction Handling            
             //for all bullets call game
-            game.physics.arcade.overlap(game.player1.rifleBullets,mobs,collidehandler,null,game); 
-            game.physics.arcade.overlap(game.player2.rifleBullets,mobs,collidehandler,null,game); 
-            game.physics.arcade.overlap(game.player1.mBullets,mobs,collidehandler,null,game); 
-            game.physics.arcade.overlap(game.player2.mBullets,mobs,collidehandler,null,game); 
-            game.physics.arcade.overlap(game.player1.rBullets,mobs,collidehandler,null,game); 
-            game.physics.arcade.overlap(game.player2.rBullets,mobs,collidehandler,null,game);
+            game.physics.arcade.overlap(player1.rifleBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(player2.rifleBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(player1.mBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(player2.mBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(player1.rBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(player2.rBullets,mobs,collidehandler,null,game);
 
 //turret handling            
             if(game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && tindex < 8){
@@ -765,7 +837,7 @@ if(player1 != null && player2 != null){
             roundstate.setText(round);
             mapstate.setText(map);
             scorestate.setText(score);
-            goldstate.setText(game.player1.gold);
+            goldstate.setText(player1.gold);
 }     
     };	
 //};
@@ -786,8 +858,8 @@ if(player1 != null && player2 != null){
         {
             mobs.destroy();
             score = score + 1;
-			game.player1.gold += 1;
-			game.player2.gold += 1;
+			player1.gold += 1;
+			player2.gold += 1;
             deadmobs ++;
             
             if(deadmobs === mobnumber )
@@ -1023,7 +1095,7 @@ if(player1 != null && player2 != null){
     function power1upgrade()
     {
 	var goldneeded = 5;
-	if(game.player1.gold < goldneeded)
+	if(player1.gold < goldneeded)
 	{
 		//
 	}
@@ -1031,8 +1103,8 @@ if(player1 != null && player2 != null){
 	{
 		console.log("Bought");
 		turretdamage = turretdamage + 5;
-		game.player1.gold -= 5;
-		game.player2.gold -= 5;
+		player1.gold -= 5;
+		player2.gold -= 5;
 	}
 	//turretdamage = turretdamage + 5;
 	
@@ -1042,7 +1114,7 @@ if(player1 != null && player2 != null){
     function power2upgrade()
     {
 	var goldneeded = 10;
-	if(game.player1.gold < goldneeded)
+	if(player1.gold < goldneeded)
 	{
 		//
 	}
@@ -1050,15 +1122,15 @@ if(player1 != null && player2 != null){
 	{
 		console.log("Bought");
 		turretdamage = turretdamage + 10;
-		game.player1.gold -= 10;
-		game.player2.gold -= 10;
+		player1.gold -= 10;
+		player2.gold -= 10;
 	}
     	
     }
     function power3upgrade()
     {
 	var goldneeded = 15;
-	if(game.player1.gold < goldneeded)
+	if(player1.gold < goldneeded)
 	{
 		//
 	}
@@ -1066,8 +1138,8 @@ if(player1 != null && player2 != null){
 	{
 		console.log("Bought");
 		turretdamage = turretdamage + 15;
-		game.player1.gold -= 15;
-		game.player2.gold -= 15;
+		player1.gold -= 15;
+		player2.gold -= 15;
 	}
     	
     }
@@ -1075,7 +1147,7 @@ if(player1 != null && player2 != null){
     function power4upgrade()
     {
 	var goldneeded = 20;
-	if(game.player1.gold < goldneeded)
+	if(player1.gold < goldneeded)
 	{
 		//
 	}
@@ -1083,15 +1155,15 @@ if(player1 != null && player2 != null){
 	{
 		console.log("Bought");
 		turretdamage = turretdamage + 20;
-		game.player1.gold -= 20;
-		game.player2.gold -= 20;
+		player1.gold -= 20;
+		player2.gold -= 20;
 	}
     	
     }
 	function power5upgrade()
 	{
 		var goldneeded = 50;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
@@ -1099,8 +1171,8 @@ if(player1 != null && player2 != null){
 		{
 			console.log("Bought");
 			turretdamage = turretdamage + 50;
-			game.player1.gold -= 50;
-			game.player2.gold -= 50;
+			player1.gold -= 50;
+			player2.gold -= 50;
 		}
 		
 	}
@@ -1111,17 +1183,17 @@ if(player1 != null && player2 != null){
 	function gunpower1upgrade()
 	{
 		var goldneeded = 5;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			game.player1.bulletdamagevar += 5;
-			game.player2.bulletdamagevar += 5;
-			game.player1.gold -= 5;
-			game.player2.gold -= 5;
+			player1.bulletdamagevar += 5;
+			player2.bulletdamagevar += 5;
+			player1.gold -= 5;
+			player2.gold -= 5;
 		}
 		//turretdamage = turretdamage + 5;
 		
@@ -1129,68 +1201,68 @@ if(player1 != null && player2 != null){
 	function gunpower2upgrade()
 	{
 		var goldneeded = 10;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			game.player1.bulletdamagevar += 10;
-			game.player2.bulletdamagevar += 10;
-			game.player1.gold -= 10;
-			game.player2.gold -= 10;
+			player1.bulletdamagevar += 10;
+			player2.bulletdamagevar += 10;
+			player1.gold -= 10;
+			player2.gold -= 10;
 		}
 		
 	}
 	function gunpower3upgrade()
 	{
 		var goldneeded = 15;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			game.player1.bulletdamagevar += 15;
-			game.player2.bulletdamagevar += 15;
-			game.player1.gold -= 15;
-			game.player2.gold -= 15;
+			player1.bulletdamagevar += 15;
+			player2.bulletdamagevar += 15;
+			player1.gold -= 15;
+			player2.gold -= 15;
 		}
 		
 	}
 	function gunpower4upgrade()
 	{
 		var goldneeded = 20;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			game.player1.bulletdamagevar += 20;
-			game.player2.bulletdamagevar += 20;
-			game.player1.gold -= 20;
-			game.player2.gold -= 20;
+			player1.bulletdamagevar += 20;
+			player2.bulletdamagevar += 20;
+			player1.gold -= 20;
+			player2.gold -= 20;
 		}
 		
 	}
 	function gunpower5upgrade()
 	{
 		var goldneeded = 50;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			game.player1.bulletdamagevar += 50;
-			game.player2.bulletdamagevar += 50;
-			game.player1.gold -= 50;
-			game.player2.gold -= 50;
+			player1.bulletdamagevar += 50;
+			player2.bulletdamagevar += 50;
+			player1.gold -= 50;
+			player2.gold -= 50;
 		}
 		
 	}
@@ -1198,85 +1270,85 @@ if(player1 != null && player2 != null){
 	function speed1upgrade()
 	{
 		var goldneeded = 5;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			game.player1.bulletspeed += 5;
-			game.player2.bulletspeed += 5;
-			game.player1.gold -= 5;
-			game.player2.gold -= 5;
+			player1.bulletspeed += 5;
+			player2.bulletspeed += 5;
+			player1.gold -= 5;
+			player2.gold -= 5;
 		}
 	}
 	
 	function speed2upgrade()
 	{
 		var goldneeded = 10;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			game.player1.bulletspeed += 10;
-			game.player2.bulletspeed += 10;
-			game.player1.gold -= 10;
-			game.player2.gold -= 10;
+			player1.bulletspeed += 10;
+			player2.bulletspeed += 10;
+			player1.gold -= 10;
+			player2.gold -= 10;
 		}
 	}
 	
 	function speed3upgrade()
 	{
 		var goldneeded = 15;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			game.player1.bulletspeed += 15;
-			game.player2.bulletspeed += 15;
-			game.player1.gold -= 15;
-			game.player2.gold -= 15;
+			player1.bulletspeed += 15;
+			player2.bulletspeed += 15;
+			player1.gold -= 15;
+			player2.gold -= 15;
 		}
 	}
 	
 	function speed4upgrade()
 	{
 		var goldneeded = 20;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			game.player1.bulletspeed += 20;
-			game.player2.bulletspeed += 20;
-			game.player1.gold -= 20;
-			game.player2.gold -= 20;
+			player1.bulletspeed += 20;
+			player2.bulletspeed += 20;
+			player1.gold -= 20;
+			player2.gold -= 20;
 		}
 	}
 	
 	function speed5upgrade()
 	{
 		var goldneeded = 50;
-		if(game.player1.gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
 			console.log("Bought");
-			game.player1.bulletspeed += 50;
-			game.player2.bulletspeed += 50;
-			game.player1.gold -= 50;
-			game.player2.gold -= 50;
+			player1.bulletspeed += 50;
+			player2.bulletspeed += 50;
+			player1.gold -= 50;
+			player2.gold -= 50;
 		}
 	}
     

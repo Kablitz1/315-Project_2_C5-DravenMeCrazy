@@ -13,7 +13,7 @@ var playerIndex = 0;
 var Eureca = require('eureca.io');
 
 //ADD MORE CLIENT FUNCTIONS LATER
-var eurecaServer = new Eureca.Server({allow:['setID', 'helloWorld', 'spawnPlayer', 'movePlayerUp']});
+var eurecaServer = new Eureca.Server({allow:['setID', 'helloWorld', 'spawnPlayer', 'movePlayerUp', 'movePlayerDown']});
 
 console.log('Print Test');
 
@@ -108,7 +108,19 @@ eurecaServer.exports.movePlayerUp = function(p_Id, eurecaId){
 		for (var cc in clients)
 		{		
 			console.log("Calling movePlayerUp" + p_Id);
-			remote.movePlayerUp(clients[cc].id, p_Id, eurecaId);		
+			remote.movePlayerUp(p_Id, eurecaId);		
+		}
+	}
+};
+
+eurecaServer.exports.movePlayerDown = function(p_Id, eurecaId){
+      for (var c in clients)
+	{
+		var remote = clients[c].remote;
+		for (var cc in clients)
+		{		
+			console.log("Calling movePlayerDown" + p_Id);
+			remote.movePlayerDown(p_Id, eurecaId);		
 		}
 	}
 };
