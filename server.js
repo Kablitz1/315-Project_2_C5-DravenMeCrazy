@@ -13,7 +13,7 @@ var playerIndex = 0;
 var Eureca = require('eureca.io');
 
 //ADD MORE CLIENT FUNCTIONS LATER
-var eurecaServer = new Eureca.Server({allow:['setID', 'helloWorld', 'spawnPlayer']});
+var eurecaServer = new Eureca.Server({allow:['setID', 'helloWorld', 'spawnPlayer', 'movePlayerUp', 'movePlayerDown']});
 
 console.log('Print Test');
 
@@ -23,8 +23,16 @@ eurecaServer.attach(server);
 //detect client connection
 eurecaServer.onConnect(function (conn) {    
     console.log('New Client id=%s ', conn.id, conn.remoteAddress);
+   console.log("Connecting...\n");
+   if(playerIndex < 3){
+	   playerIndex++;
+   }
+   else{
+	   console.log("Too many Clients, rejected connection");
+	   playerIndex = 0;
+	   return;
+   }
     
-    playerIndex++;
 	
 	console.log('PlayerId=%s', playerIndex);
 	
@@ -36,10 +44,6 @@ eurecaServer.onConnect(function (conn) {
 	
 	//here we call setID (defined in the client side)
 	remote.setID(conn.id, playerIndex);	
-	//if(client calls helloWorld){
-		//remote.helloWorld();
-	//}
-	//remote.helloWorld();
 });
 
 //detect client disconnection
@@ -59,22 +63,31 @@ eurecaServer.onDisconnect(function (conn) {
 	}	
 });
 
-eurecaServer.exports.handshake = function()
+var p1rdy = false;
+var p2rdy = false;
+eurecaServer.exports.handshake = function(p_Id, ready, myId)
 {
-	for (var c in clients)
-	{
-		var remote = clients[c].remote;
-		for (var cc in clients)
-		{		
-			//send latest known position
-			//var x = clients[cc].laststate ? clients[cc].laststate.x:  0;
-			//var y = clients[cc].laststate ? clients[cc].laststate.y:  0;
-			var x = 0;
-			var y = 0;
-
-			//remote.spawnPlayer(clients[cc].id, index);		
-		}
+	console.log("Handshaking...\n");
+	if(p_Id == 1){
+		p1rdy = ready;
 	}
+	else if(p_Id ==2){
+		p2rdy = ready;
+	}
+	if(p1rdy && p2rdy){
+		for (var c in clients)
+		{
+			var remote = clients[c].remote;
+			for (var cc in clients)
+			{		
+				console.log("Spawning for Client: " + p_Id);
+				if(myId == clients[cc].id){
+					remote.spawnPlayer(clients[cc].id, p_Id);		
+				}
+			}
+		}
+	}	
+	else{return;}
 }
 
 eurecaServer.exports.helloWorld = function(p_Id, eurecaId){
@@ -88,4 +101,28 @@ eurecaServer.exports.helloWorld = function(p_Id, eurecaId){
 	}
 };
 
-server.listen(12334);
+eurecaServer.exports.movePlayerUp = function(p_Id, eurecaId){
+      for (var c in clients)
+	{
+		var remote = clients[c].remote;
+		for (var cc in clients)
+		{		
+			console.log("Calling movePlayerUp" + p_Id);
+			remote.movePlayerUp(p_Id, eurecaId);		
+		}
+	}
+};
+
+eurecaServer.exports.movePlayerDown = function(p_Id, eurecaId){
+      for (var c in clients)
+	{
+		var remote = clients[c].remote;
+		for (var cc in clients)
+		{		
+			console.log("Calling movePlayerDown" + p_Id);
+			remote.movePlayerDown(p_Id, eurecaId);		
+		}
+	}
+};
+
+server.listen(12335);

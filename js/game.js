@@ -1,18 +1,16 @@
 ////////////////////////////////////////////////////////////////////
 //  Global Variable Declerations
 ////////////////////////////////////////////////////////////////////
-    var game = new Phaser.Game(1920, 900, Phaser.AUTO, 'game');
+	var game;
     
     
     var flipFlop = false;
-    
-
-	var myId;
+  
     //players
     var player1;
     var player2;
-	var playerId;
-	//var myplayerId;
+	var myId;
+	var playerIndex;
     
     //turrets
     var turrets = [];
@@ -72,7 +70,9 @@
     var gunspeedButton5;
 	
     var helpButton;
+	
     var optionButton;
+	var settingsButton;
     
     // enemies
     var mobs;
@@ -112,74 +112,107 @@ var eurecaClientSetup = function(){
     //create eureca.io client instance
     var eurecaClient = new Eureca.Client();
     
-    
-    //?
     eurecaClient.ready(function (proxy){
         eurecaServer = proxy;
     });
     
     //methods under "exports" become available on server side (aka heres the functions the server can call)
-    eurecaClient.exports.setID = function(id, playerIndex){
+    eurecaClient.exports.setID = function(id, iplayerIndex){
         myId = id; //unique connection ID
-        playerId = playerIndex;
-        console.log(playerId);
-        game.state.add('game', PhaserGame, true);
-        //PhaserGame.create(); //create method of game, need to define for this instance
-        //eurecaServer.handshake();
+        playerIndex = iplayerIndex;
+        console.log(playerIndex);
         ready = true; //start handshaking
+		eurecaServer.handshake(playerIndex, ready, myId);
     }    
     
     eurecaClient.exports.helloWorld = function(id, p_Id, eurecaId){
-		
-		//console.log("HELLO WORLD" + id);
 		console.log("HELLO WORLD " + p_Id);
 		console.log("HELLO WORLD " + eurecaId);
-		
-		/*if(id != myId)
-			console.log("HELLO WORLD" + id);
-		
-		else
-			console.log("HELLO WORLD" + id);*/
-		
-		/*if(p_Id === 1)
-			console.log("HELLO WORLD" + id);
-		
-		else
-			console.log("HELLO WORLD" + myId);*/
 	}
- /*
-//basically any functions that server needs to call will be defined here    
-    eurecaClient.exports.updateState = function(id, state){
-        PhaserGame.update();
-    }
-    
-    eurecaClient.exports.startNextRound = function(startBool){
-        
-    };
-    eurecaClient.exports.helloWorld = function(){
-        console.log("HELLO WORLD");
-    };
-    eurecaClient.exports.playerFire = function(player_index){
-        
-    };
-    eurecaClient.exports.playerSwitchWeapon1 = function(){
-        
-    };
-    eurecaClient.exports.playerSwitchWeapon2 = function(){
-        
-    };
-    eurecaClient.exports.playerSwitchWeapon3 = function(){
-        
-    };
-    eurecaClient.exports.playerMoveUp = function(){
-        
-    };
-    eurecaClient.exports.playerMoveDown = function(){
-        
-    };
-    eurecaClient.exports.playerPlaceTurret = function(){
-        
-    };*/
+	
+	eurecaClient.exports.spawnPlayer = function(clientId, iplayerIndex){
+		game = new Phaser.Game(1920, 900, Phaser.AUTO, 'game', {preload: preload, create: create, update: update});
+		if(game != null){
+			console.log("Set Game Properly");
+		}
+		game.boot();
+		/*preload();
+		console.log("Preloading");
+		create();
+		if(iplayerIndex == 1 ){
+			console.log("Spawning player: "+ iplayerIndex);
+			player1 = new Player(game, myId, 1);
+			player2 = new Player(game, clientId, 2);
+			game.world.bringToTop(player1.alien);
+			game.world.bringToTop(player2.alien);
+		}
+		if(iplayerIndex == 2){
+			console.log("Spawning player: "+ iplayerIndex);
+			player2 = new Player(game, myId, 2);
+			player1 = new Player(game, clientId, 1);
+			game.world.bringToTop(player1.alien);
+			game.world.bringToTop(player2.alien);
+		}*/
+	}
+	
+	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId){
+		
+		
+		
+		//player1.alien.body.velocity.set(0);
+		//player2.alien.body.velocity.set(0);
+		
+		if(p_Id == 1){
+			console.log("PLAYER 1 UP" + player1.alien.body.y);
+			player1.alien.body.velocity.y = -200;
+			
+			/*player1.alien.body.velocity.set(0);
+			if(upKey1.isDown || upKey2.isDown)
+				player1.alien.body.velocity.y = -200;*/
+			
+			/*if(player1.alien.body.y >= 80){
+				console.log("Changing player1 speed");
+				//player1.alien.body.velocity.y = -player1.game.speed;
+				//player1.alien.body.velocity.y = -200;
+				player1.alien.body.y = 100;
+			}*/
+		}
+		if(p_Id == 2){
+			console.log("PLAYER 2 UP" + player2.alien.body.y);
+			player2.alien.body.velocity.y = -200;
+			
+			/*player2.alien.body.velocity.set(0);
+			if(upKey1.isDown || upKey2.isDown)
+				player2.alien.body.velocity.y = -200;*/
+			
+			/*if(player2.alien.body.y >= 80){
+				console.log("Changing player2 speed");
+				//player2.alien.body.velocity.y = -player2.game.speed;
+				//player2.alien.body.velocity.y = -200;
+				player2.alien.body.y = 100;
+			}*/
+		}
+	}
+	
+	eurecaClient.exports.movePlayerDown = function(p_Id, eurecaId){
+		console.log("PLAYER 1 DOWN" + player1.alien.body.y);
+		console.log("PLAYER 2 DOWN" + player2.alien.body.y);
+		
+		//player1.alien.body.velocity.set(0);
+		//player2.alien.body.velocity.set(0);
+		
+		if(p_Id == 1){
+			
+			player1.alien.body.velocity.y = 200;
+			
+		}
+		if(p_Id == 2){
+			
+			player2.alien.body.velocity.y = 200;
+			
+		}
+	}
+	
 };
 
 
@@ -187,7 +220,7 @@ var eurecaClientSetup = function(){
 //  Main Player Class
 ////////////////////////////////////////////////////////////////////
 var Player = function(game, player, index){
-    
+    console.log("Game spawning player" + index);
     this.game = game;
     this.player = player;
 
@@ -197,7 +230,7 @@ var Player = function(game, player, index){
         this.alien = game.add.sprite(27,game.world.height-400, 'alien_sprite');
     }
     else if(index === 2){ //player 2
-        this.alien = game.add.sprite(125,game.world.height-500, 'alien_sprite');
+        this.alien = game.add.sprite(125,game.world.height-400, 'alien_sprite');
     }
     this.alien.enableBody = true;
     this.game.physics.arcade.enable(this.alien); 
@@ -298,37 +331,48 @@ Player.prototype.fireRocket = function(){
 };
 
 Player.prototype.update = function(){
-     this.alien.body.velocity.set(0);
+    this.alien.body.velocity.set(0);
             
     if (upKey1.isDown || upKey2.isDown){
+		//console.log("UP KEY");
         if(this.alien.body.y >= 80){
-            this.alien.body.velocity.y = -this.game.speed;
+			console.log("UP KEY");
+            //this.alien.body.velocity.y = -this.game.speed;
+			//this.alien.body.y = 500;
+			this.alien.body.velocity.y = -200;
         }
     }
     else if (downKey1.isDown || downKey2.isDown){
+		//console.log("DOWN KEY");
         if(this.alien.body.y <= this.game.world.height - 200){
-            this.alien.body.velocity.y = this.game.speed;
+			console.log("DOWN KEY");
+            //this.alien.body.velocity.y = this.game.speed;
+			//this.alien.body.y = 100;
+			this.alien.body.velocity.y = 200;
         }
     }
 
 //weapon switch
     if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
+		console.log("weapon 1");
         this.currentWeapon = 1;
         this.alien.frame = 0;
     }
     else if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
+		console.log("weapon 2");
         this.currentWeapon = 2;
         this.alien.frame = 1;
     }
     else if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
+		console.log("weapon 3");
         this.currentWeapon = 3;
         this.alien.frame = 2;
     }
 	
 	if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
-		eurecaServer.helloWorld(playerId);
+		console.log("Trying to helloWorld");
+		eurecaServer.helloWorld(playerIndex);
 	}
-	
     
 
 //weapon fire    
@@ -425,49 +469,30 @@ Turret.prototype.update = function(){
 ////////////////////////////////////////////////////////////////////
 //  Game State Structure
 ////////////////////////////////////////////////////////////////////
-var GameState = function(){
-    this.mobs = mobs;
-    this.turrets = turrets;
-    this.player1 = player1;
-    this.player2 = player2;
-    this.wallHealth = wallHealth;
-    this.round = roundstate;
-    this.map = mapstate;
-    this.score = scorestate;
-    this.gold = goldstate;
-};
+/*var GameState = function(){
+    game.mobs = mobs;
+    game.turrets = turrets;
+    game.player1 = player1;
+    game.player2 = player2;
+    game.wallHealth = wallHealth;
+    game.round = roundstate;
+    game.map = mapstate;
+    game.score = scorestate;
+    game.gold = goldstate;
+};*/
 
-////////////////////////////////////////////////////////////////////
-//  Main Game Loop
-////////////////////////////////////////////////////////////////////
-    var PhaserGame = function () {
-
-        //this.background = null;
-
-        this.player1 = null;
-        this.player2 = null;
-        this.cursors = null;
-        this.speed = 300;
-        //this.bullet = null;
-
-        this.weapons = [];
-        this.currentWeapon = 0;
-        this.weaponName = null;
-        
-
-    };
-
-    PhaserGame.prototype = {
-        
 ////////////////////////////////////////////////////////////////////
 //  Preload
 ////////////////////////////////////////////////////////////////////
-        preload: function () {
-
+        function preload() {
+			console.log("Preload being called...");
+			if(game != null){
+				console.log("GAME IS NOT NULL DAMMIT");
+			}
             var asset_location = 'assets/'; //uncomment for cloud9
             //var asset_location = ''; //uncomment for compute
             
-            this.load.crossOrigin = 'anonymous';
+            game.load.crossOrigin = 'Anonymous';
 
             game.load.image('space_background', asset_location + 'space_background.jpg');
             
@@ -479,9 +504,9 @@ var GameState = function(){
             game.load.image('turret_sprite', asset_location + 'turret_sprite.png');
             
             //projectiles
-            this.load.spritesheet('rifle_projectile',asset_location + 'rifle_projectile.png');
-            this.load.spritesheet('machine_projectile',asset_location + 'machine_projectile.png');
-            this.load.spritesheet('rocket_projectile',asset_location + 'rocket_projectile.png');
+            game.load.spritesheet('rifle_projectile',asset_location + 'rifle_projectile.png');
+            game.load.spritesheet('machine_projectile',asset_location + 'machine_projectile.png');
+            game.load.spritesheet('rocket_projectile',asset_location + 'rocket_projectile.png');
             
             //UI 
             game.load.image('bottom_boundry', asset_location + 'bottom_boundry.png');
@@ -497,63 +522,63 @@ var GameState = function(){
             game.load.spritesheet('upgrade_button_spritesheet', asset_location + 'upgrade_button_spritesheet.png', 193, 80);
             game.load.spritesheet('option_button_spritesheet', asset_location + 'option_button_spritesheet.png', 193, 80);
             game.load.spritesheet('help_button_spritesheet', asset_location + 'help_button_spritesheet.png', 193, 80);
-	    game.load.image('power1button',asset_location + 'power1button.jpg');
-	    game.load.image('power2button',asset_location + 'power2button.jpg');
-	    game.load.image('power3button',asset_location + 'power3button.jpg');
-	    game.load.image('power4button',asset_location + 'power4button.jpg');
-	    game.load.image('power5button',asset_location + 'power5button.jpg');
+			game.load.image('power1button',asset_location + 'power1button.jpg');
+			game.load.image('power2button',asset_location + 'power2button.jpg');
+			game.load.image('power3button',asset_location + 'power3button.jpg');
+			game.load.image('power4button',asset_location + 'power4button.jpg');
+			game.load.image('power5button',asset_location + 'power5button.jpg');
 			
-	    game.load.image('speed1button',asset_location + 'speed1button.jpg');
-	    game.load.image('speed2button',asset_location + 'speed2button.jpg');
-	    game.load.image('speed3button',asset_location + 'speed3button.jpg');
-	    game.load.image('speed4button',asset_location + 'speed4button.jpg');
-	    game.load.image('speed5button',asset_location + 'speed5button.jpg');
+			game.load.image('speed1button',asset_location + 'speed1button.jpg');
+			game.load.image('speed2button',asset_location + 'speed2button.jpg');
+			game.load.image('speed3button',asset_location + 'speed3button.jpg');
+			game.load.image('speed4button',asset_location + 'speed4button.jpg');
+			game.load.image('speed5button',asset_location + 'speed5button.jpg');
+			
+			game.load.image('settingsbutton',asset_location + 'settingsbutton.jpg');
             
             //menus
             game.load.image('upgrade_menu', asset_location + 'upgrade_menu.png');
             game.load.image('option_menu', asset_location + 'options_menu.png');
             game.load.image('help_menu', asset_location + 'help_menu.png');
 
-        },
+        };
 
 
 ////////////////////////////////////////////////////////////////////
 //  Create
 ////////////////////////////////////////////////////////////////////
-        create: function () {
+        function create () {
             //eurecaClientSetup();
 //Physics & Background            
-            this.physics.startSystem(Phaser.Physics.ARCADE);  //gives the game aracde physics
+            game.physics.startSystem(Phaser.Physics.ARCADE);  //gives the game aracde physics
 
             background = game.add.sprite(0,0,'space_background');  //makes the background
             
-            this.add.sprite(0, 0, 'bothotbar_sprite');//makes bottom hotbar
-            this.add.sprite(0, 0, 'lanes_top_sprite');//makes top and lanes
+            game.add.sprite(0, 0, 'bothotbar_sprite');//makes bottom hotbar
+            game.add.sprite(0, 0, 'lanes_top_sprite');//makes top and lanes
             
             
-            wall = this.add.sprite(0, 0, 'wall_moblane_sprite');//makes wall and moblanes
+            wall = game.add.sprite(0, 0, 'wall_moblane_sprite');//makes wall and moblanes
             //giving wall health attributes
             wall.health = 100;
           
 //Making Buttons
-            upgradeButton = game.add.button(game.world.centerX -100, game.world.height - 100,'upgrade_button_spritesheet', upgradeClick, this, 2, 1, 0); //2, 1, 0 are frames of spritesheet
-            upgradeButton.onInputOver.add(overUpgrade, this); //when button is hovered over
-            upgradeButton.onInputOut.add(outUpgrade, this); //when button is not hovered over over
-            upgradeButton.onInputUp.add(upUpgrade, this); //when finished clicking
+            upgradeButton = game.add.button(game.world.centerX -100, game.world.height - 100,'upgrade_button_spritesheet', upgradeClick, game, 2, 1, 0); //2, 1, 0 are frames of spritesheet
+            upgradeButton.onInputOver.add(overUpgrade, game); //when button is hovered over
+            upgradeButton.onInputOut.add(outUpgrade, game); //when button is not hovered over over
+            upgradeButton.onInputUp.add(upUpgrade, game); //when finished clicking
             
-            optionButton = game.add.button(game.world.width - 150, game.world.height - 100,'option_button_spritesheet', optionClick, this, 2, 1, 0); //2, 1, 0 are frames of spritesheet
-            optionButton.onInputOver.add(overOption, this); //when button is hovered over
-            optionButton.onInputOut.add(outOption, this); //when button is not hovered over over
-            optionButton.onInputUp.add(upOption, this); //when finished clicking
+            optionButton = game.add.button(game.world.width - 150, game.world.height - 100,'option_button_spritesheet', optionClick, game, 2, 1, 0); //2, 1, 0 are frames of spritesheet
+            optionButton.onInputOver.add(overOption, game); //when button is hovered over
+            optionButton.onInputOut.add(outOption, game); //when button is not hovered over over
+            optionButton.onInputUp.add(upOption, game); //when finished clicking
             
-            helpButton = game.add.button(game.world.width - 350, game.world.height - 100,'help_button_spritesheet', helpClick, this, 2, 1, 0); //2, 1, 0 are frames of spritesheet
-            helpButton.onInputOver.add(overHelp, this); //when button is hovered over
-            helpButton.onInputOut.add(outHelp, this); //when button is not hovered over over
-            helpButton.onInputUp.add(upHelp, this); //when finished clicking
+            helpButton = game.add.button(game.world.width - 350, game.world.height - 100,'help_button_spritesheet', helpClick, game, 2, 1, 0); //2, 1, 0 are frames of spritesheet
+            helpButton.onInputOver.add(overHelp, game); //when button is hovered over
+            helpButton.onInputOut.add(outHelp, game); //when button is not hovered over over
+            helpButton.onInputUp.add(upHelp, game); //when finished clicking
 
-            //var myId = "unique ID1";//server assigns this
-            this.player1 = new Player(this, myId, 1);
-            this.player2 = new Player(this, myId, 2);
+            //var myId = "unique ID1";//server assigns game
 
 //Mob Physics & creation
             mobs = game.add.group();
@@ -562,9 +587,9 @@ var GameState = function(){
 
 //Keybindings
             //  Cursor keys to fly + space to fire
-            this.cursors = this.input.keyboard.createCursorKeys();
+            game.cursors = game.input.keyboard.createCursorKeys();
 
-            this.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
+            game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
 
             //  keybindings and controls
             cursors = game.input.keyboard.createCursorKeys();
@@ -596,52 +621,52 @@ var GameState = function(){
             
             //turret upgrade buttons
 			
-	    powerButton1 = game.add.button(765,255,"power1button",power1upgrade,this,0);
+	    powerButton1 = game.add.button(765,255,"power1button",power1upgrade,game,0);
 	    powerButton1.visible =! powerButton1.visible;
 			
-	    powerButton2 = game.add.button(774,330,"power2button",power2upgrade,this,0);
+	    powerButton2 = game.add.button(774,330,"power2button",power2upgrade,game,0);
 	    powerButton2.visible =! powerButton2.visible;
 			
-	    powerButton3 = game.add.button(770,410,"power3button",power3upgrade,this,0);
+	    powerButton3 = game.add.button(770,410,"power3button",power3upgrade,game,0);
 	    powerButton3.visible =! powerButton3.visible;
 			
-	    powerButton4 = game.add.button(775,490,"power4button",power4upgrade,this,0);
+	    powerButton4 = game.add.button(775,490,"power4button",power4upgrade,game,0);
 	    powerButton4.visible =! powerButton4.visible;
 			
-	    powerButton5 = game.add.button(770,565,"power5button",power5upgrade,this,0);
+	    powerButton5 = game.add.button(770,565,"power5button",power5upgrade,game,0);
 	    powerButton5.visible =! powerButton5.visible;
             
 	    //gun upgrade buttons
 			
-	    gunspeedButton1 = game.add.button(920,255,"speed1button",speed1upgrade,this,0);
+	    gunspeedButton1 = game.add.button(920,255,"speed1button",speed1upgrade,game,0);
 	    gunspeedButton1.visible =! gunspeedButton1.visible;
 			
-	    gunspeedButton2 = game.add.button(915,333,"speed2button",speed2upgrade,this,0);
+	    gunspeedButton2 = game.add.button(915,333,"speed2button",speed2upgrade,game,0);
 	    gunspeedButton2.visible =! gunspeedButton2.visible;
 			
-	    gunspeedButton3 = game.add.button(922,405,"speed3button",speed3upgrade,this,0);
+	    gunspeedButton3 = game.add.button(922,405,"speed3button",speed3upgrade,game,0);
 	    gunspeedButton3.visible =! gunspeedButton3.visible;
 			
-	    gunspeedButton4 = game.add.button(922,490,"speed4button",speed4upgrade,this,0);
+	    gunspeedButton4 = game.add.button(922,490,"speed4button",speed4upgrade,game,0);
 	    gunspeedButton4.visible =! gunspeedButton4.visible;
 			
-	    gunspeedButton5 = game.add.button(922,565,"speed5button",speed5upgrade,this,0);
+	    gunspeedButton5 = game.add.button(922,565,"speed5button",speed5upgrade,game,0);
 	    gunspeedButton5.visible =! gunspeedButton5.visible;
 			
 			
-	    gunpowerButton1 = game.add.button(1030,255,"power1button",gunpower1upgrade,this,0);
+	    gunpowerButton1 = game.add.button(1030,255,"power1button",gunpower1upgrade,game,0);
 	    gunpowerButton1.visible =! gunpowerButton1.visible;
 			
-	    gunpowerButton2 = game.add.button(1036,333,"power2button",gunpower2upgrade,this,0);
+	    gunpowerButton2 = game.add.button(1036,333,"power2button",gunpower2upgrade,game,0);
 	    gunpowerButton2.visible =! gunpowerButton2.visible;
 			
-	    gunpowerButton3 = game.add.button(1030,405,"power3button",gunpower3upgrade,this,0);
+	    gunpowerButton3 = game.add.button(1030,405,"power3button",gunpower3upgrade,game,0);
 	    gunpowerButton3.visible =! gunpowerButton3.visible;
 			
-	    gunpowerButton4 = game.add.button(1035,490,"power4button",gunpower4upgrade,this,0);
+	    gunpowerButton4 = game.add.button(1035,490,"power4button",gunpower4upgrade,game,0);
 	    gunpowerButton4.visible =! gunpowerButton4.visible;
 			
-	    gunpowerButton5 = game.add.button(1030,565,"power5button",gunpower5upgrade,this,0);
+	    gunpowerButton5 = game.add.button(1030,565,"power5button",gunpower5upgrade,game,0);
 	    gunpowerButton5.visible =! gunpowerButton5.visible;
 			
 			
@@ -653,6 +678,9 @@ var GameState = function(){
             
             option_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'option_menu');
             option_menu.visible =! option_menu.visible;
+			
+			settingsButton = game.add.button(880,160,'settingsbutton',settings,game,0)
+			settingsButton.visible =! settingsButton.visible;
             
             help_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'help_menu');
             help_menu.visible =! help_menu.visible;
@@ -660,7 +688,7 @@ var GameState = function(){
 
             var style = { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
             var style2 = { font: "bold 16px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-            wallHealth = this.add.text(220,35, "Wall Health: " + wall.health, style);
+            wallHealth = game.add.text(220,35, "Wall Health: " + wall.health, style);
             mapstate  = game.add.text(1680,20,map,style2);
             roundstate = game.add.text(1700,42,round,style2);
             scorestate = game.add.text(1500,25,score,style);
@@ -672,12 +700,15 @@ var GameState = function(){
             stateText.anchor.setTo(0.5, 0.5);
             stateText.visible = false;
 
-        },
+			
+			player1 = new Player(game, myId, 1);
+			player2 = new Player(game, myId, 2);
+        };
 
 ////////////////////////////////////////////////////////////////////
 //  Wall Damage handler
 ////////////////////////////////////////////////////////////////////        
-        wallDamage: function (doDamage)
+        function wallDamage (doDamage)
         {
             //Mob/Wall Interaction Handling
             for(var i = 0; i < mobs.length; i++)
@@ -687,7 +718,7 @@ var GameState = function(){
                     mobs.getAt(i).body.velocity.set(0);
                     if(doDamage)
                     {
-                        mobs.getAt(i).frame = 1; //for some reason this framing wont work....
+                        mobs.getAt(i).frame = 1; //for some reason game framing wont work....
                         //start damaging wall
                         if(wall.health > 0)
                         {
@@ -704,7 +735,7 @@ var GameState = function(){
                                 stateText.text = "Defeated \n Click on screen to Restart Round";
                                 stateText.visible = true;
             
-                                game.input.onTap.addOnce(restartiflost,this);
+                                game.input.onTap.addOnce(restartiflost,game);
                             }
                             
                             else if(lostcount === 3)
@@ -712,7 +743,7 @@ var GameState = function(){
                                 stateText.text = "Game Over";
                                 stateText.visible = true;
                                 
-                                game.input.onTap.addOnce(gameover,this);
+                                game.input.onTap.addOnce(gameover,game);
                             }
                             
                         }
@@ -722,56 +753,79 @@ var GameState = function(){
                     mobs.getAt(i).frame = 0;
                 }
             }
-        },
+        };
 ////////////////////////////////////////////////////////////////////
 //  Gamestate Update Function
 ///////////////////////////////////////////////////////////////////
 
-        update: function () {
-        this.player1.update();
-        this.player2.update();
+        function update () {
+			//console.log("Trying to helloWorld");
+if(player1 != null && player2 != null){
+			//console.log("Trying to helloWorld");
+			//game.player1 = player1;
+			//game.player2 = player2;
+			if(playerIndex === 1){
+				player2.alien.body.velocity.set(0);
+				player1.update();
+			}
+			if(playerIndex === 2){
+				player1.alien.body.velocity.set(0);
+				player2.update();
+			}
+		
         
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.J)){
-             eurecaServer.helloWorld(playerId, myId);
+        if(game.input.keyboard.isDown(Phaser.Keyboard.J)){
+			console.log("Trying to helloWorld");
+             eurecaServer.helloWorld(playerIndex, myId);
         }
+		
+		//eurecaServer.movePlayerUp(playerIndex, myId);
+		
+		if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.W)){
+			eurecaServer.movePlayerUp(playerIndex, myId);
+		}
+		
+		if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN) || this.game.input.keyboard.isDown(Phaser.Keyboard.S)){
+			eurecaServer.movePlayerDown(playerIndex, myId);
+		}
         
         
 //Mob/Projectile Interaction Handling            
-            //for all bullets call this
-            this.physics.arcade.overlap(this.player1.rifleBullets,mobs,collidehandler,null,this); 
-            this.physics.arcade.overlap(this.player2.rifleBullets,mobs,collidehandler,null,this); 
-            this.physics.arcade.overlap(this.player1.mBullets,mobs,collidehandler,null,this); 
-            this.physics.arcade.overlap(this.player2.mBullets,mobs,collidehandler,null,this); 
-            this.physics.arcade.overlap(this.player1.rBullets,mobs,collidehandler,null,this); 
-            this.physics.arcade.overlap(this.player2.rBullets,mobs,collidehandler,null,this);
+            //for all bullets call game
+            game.physics.arcade.overlap(player1.rifleBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(player2.rifleBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(player1.mBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(player2.mBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(player1.rBullets,mobs,collidehandler,null,game); 
+            game.physics.arcade.overlap(player2.rBullets,mobs,collidehandler,null,game);
 
 //turret handling            
-            if(this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && tindex < 8){
+            if(game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && tindex < 8){
                 if(!flipFlop){
-                    var newturret = new Turret(this, tindex);
+                    var newturret = new Turret(game, tindex);
                     turrets.push(newturret);
                     tindex = turrets.length;
                     flipFlop = true;
                 }
             }
-            if(!this.game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
+            if(!game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
                 flipFlop = false;
             }
             
             for(var i = 0; i < turrets.length; i++){
                 turrets[i].update();
-                this.physics.arcade.overlap(turrets[i].tBullets,mobs,collidehandler,null,this);
+                game.physics.arcade.overlap(turrets[i].tBullets,mobs,collidehandler,null,game);
             }
             
             
             if(wallFrequency === 120)
             {
-                this.wallDamage(true);
+                wallDamage(true);
                 wallFrequency = 0;
             }
             else
             {
-                this.wallDamage(false);
+                wallDamage(false);
                 wallFrequency++;
             }
             
@@ -781,18 +835,13 @@ var GameState = function(){
             roundstate.setText(round);
             mapstate.setText(map);
             scorestate.setText(score);
-            goldstate.setText(gold);
-          
-        
-    }
-        
-
-
-    };
+            goldstate.setText(player1.gold);
+}     
+    };	
+//};
 
 	
 	eurecaClientSetup();
-    //game.state.add('game', PhaserGame, true);
     
 ////////////////////////////////////////////////////////////////////
 //  Mobs/Projectiles Collision Handler
@@ -803,13 +852,12 @@ var GameState = function(){
         projectile.kill();
         mobs.health -= projectile.damage;
 		
-		PhaserGame.player1.gold += 1;
-		PhaserGame.player2.gold += 1;
-		
         if (mobs.health <= 0)
         {
             mobs.destroy();
             score = score + 1;
+			player1.gold += 1;
+			player2.gold += 1;
             deadmobs ++;
             
             if(deadmobs === mobnumber )
@@ -820,7 +868,7 @@ var GameState = function(){
                     stateText.visible = true;
                 }
                 
-                game.input.onTap.addOnce(restart,this);
+                game.input.onTap.addOnce(restart,game);
             }            
             
         }
@@ -847,27 +895,160 @@ var GameState = function(){
     
 ////////////////////////////////////////////////////////////////////
 //  Mobs Spawning
-////////////////////////////////////////////////////////////////////    
+////////////////////////////////////////////////////////////////////
+
+    
      function createmobs()
      {
-         
-       for( var i = 0; i < mobnumber; i ++)
-        {
-            var mob =  mobs.create(1950 - Math.random()*(100-50) , Math.random()*(700-100)+100,'mob_sprite');
-            mob.body.velocity.x = -100;
-            mob.body.gravity.y = 0;
-            mob.health = 250;
-            
-            if (round === 10)
-            {
-                var boss = mobs.create(1700,400,'boss_sprite');
-                //boss.body.velocity.x = 100;
-                boss.body.gravity.y = 0;
-                boss.health = 5000;
-                
-            }
-        }
-    }
+        switch(round){ 
+		case 1:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex , wavey + 100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 10;
+				wavey += 140;
+			}
+			break;
+        case 2:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 5;
+				wavey += 65;
+			}
+			break;
+			
+		case 3:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 5;
+				wavey += 45;
+			}
+			break;
+			
+		case 4:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 5;
+				wavey += 30;
+			}
+			break;
+			
+		case 5:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 10;
+				wavey += 20;
+			}
+			break;
+			
+		case 6:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 10;
+				wavey += 15;
+			}
+			break;
+			
+		case 7:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 5;
+				wavey += 15;
+			}
+			break;
+			
+		case 8:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 15;
+				wavey += 10;
+			}
+			break;
+			
+		case 9:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 12;
+				wavey += 10;
+			}
+			break;
+			
+		case 10:
+			var wavex = 50;
+			var wavey = 10;
+			for( var i = 0; i < mobnumber; i ++)
+			{
+				var mob =  mobs.create(1950 - wavex,wavey + 100,'mob_sprite');
+				mob.body.velocity.x = -100;
+				mob.body.gravity.y = 0;
+				mob.health = 250;
+				wavex += 12;
+				wavey += 10;
+			}
+			var boss = mobs.create(1700,400,'boss_sprite');
+            //boss.body.velocity.x = 100;
+            boss.body.gravity.y = 0;
+            boss.health = 5000;
+				
+			break;
+        
+		default:
+		
+		}	
+	}
     
 ////////////////////////////////////////////////////////////////////
 //  Button Interfaces
@@ -912,15 +1093,16 @@ var GameState = function(){
     function power1upgrade()
     {
 	var goldneeded = 5;
-	if(gold < goldneeded)
+	if(player1.gold < goldneeded)
 	{
 		//
 	}
 	else
 	{
+		console.log("Bought");
 		turretdamage = turretdamage + 5;
-		PhaserGame.player1.gold -= 5;
-		PhaserGame.player2.gold -= 5;
+		player1.gold -= 5;
+		player2.gold -= 5;
 	}
 	//turretdamage = turretdamage + 5;
 	
@@ -930,30 +1112,32 @@ var GameState = function(){
     function power2upgrade()
     {
 	var goldneeded = 10;
-	if(gold < goldneeded)
+	if(player1.gold < goldneeded)
 	{
 		//
 	}
 	else
 	{
+		console.log("Bought");
 		turretdamage = turretdamage + 10;
-		PhaserGame.player1.gold -= 10;
-		PhaserGame.player2.gold -= 10;
+		player1.gold -= 10;
+		player2.gold -= 10;
 	}
     	
     }
     function power3upgrade()
     {
 	var goldneeded = 15;
-	if(gold < goldneeded)
+	if(player1.gold < goldneeded)
 	{
 		//
 	}
 	else
 	{
+		console.log("Bought");
 		turretdamage = turretdamage + 15;
-		PhaserGame.player1.gold -= 15;
-		PhaserGame.player2.gold -= 15;
+		player1.gold -= 15;
+		player2.gold -= 15;
 	}
     	
     }
@@ -961,30 +1145,32 @@ var GameState = function(){
     function power4upgrade()
     {
 	var goldneeded = 20;
-	if(gold < goldneeded)
+	if(player1.gold < goldneeded)
 	{
 		//
 	}
 	else
 	{
+		console.log("Bought");
 		turretdamage = turretdamage + 20;
-		PhaserGame.player1.gold -= 20;
-		PhaserGame.player2.gold -= 20;
+		player1.gold -= 20;
+		player2.gold -= 20;
 	}
     	
     }
 	function power5upgrade()
 	{
 		var goldneeded = 50;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
+			console.log("Bought");
 			turretdamage = turretdamage + 50;
-			PhaserGame.player1.gold -= 50;
-			PhaserGame.player2.gold -= 50;
+			player1.gold -= 50;
+			player2.gold -= 50;
 		}
 		
 	}
@@ -995,16 +1181,17 @@ var GameState = function(){
 	function gunpower1upgrade()
 	{
 		var goldneeded = 5;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletdamagevar += 5;
-			PhaserGame.player2.bulletdamagevar += 5;
-			PhaserGame.player1.gold -= 5;
-			PhaserGame.player2.gold -= 5;
+			console.log("Bought");
+			player1.bulletdamagevar += 5;
+			player2.bulletdamagevar += 5;
+			player1.gold -= 5;
+			player2.gold -= 5;
 		}
 		//turretdamage = turretdamage + 5;
 		
@@ -1012,64 +1199,68 @@ var GameState = function(){
 	function gunpower2upgrade()
 	{
 		var goldneeded = 10;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletdamagevar += 10;
-			PhaserGame.player2.bulletdamagevar += 10;
-			PhaserGame.player1.gold -= 10;
-			PhaserGame.player2.gold -= 10;
+			console.log("Bought");
+			player1.bulletdamagevar += 10;
+			player2.bulletdamagevar += 10;
+			player1.gold -= 10;
+			player2.gold -= 10;
 		}
 		
 	}
 	function gunpower3upgrade()
 	{
 		var goldneeded = 15;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletdamagevar += 15;
-			PhaserGame.player2.bulletdamagevar += 15;
-			PhaserGame.player1.gold -= 15;
-			PhaserGame.player2.gold -= 15;
+			console.log("Bought");
+			player1.bulletdamagevar += 15;
+			player2.bulletdamagevar += 15;
+			player1.gold -= 15;
+			player2.gold -= 15;
 		}
 		
 	}
 	function gunpower4upgrade()
 	{
 		var goldneeded = 20;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletdamagevar += 20;
-			PhaserGame.player2.bulletdamagevar += 20;
-			PhaserGame.player1.gold -= 20;
-			PhaserGame.player2.gold -= 20;
+			console.log("Bought");
+			player1.bulletdamagevar += 20;
+			player2.bulletdamagevar += 20;
+			player1.gold -= 20;
+			player2.gold -= 20;
 		}
 		
 	}
 	function gunpower5upgrade()
 	{
 		var goldneeded = 50;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletdamagevar += 50;
-			PhaserGame.player2.bulletdamagevar += 50;
-			PhaserGame.player1.gold -= 50;
-			PhaserGame.player2.gold -= 50;
+			console.log("Bought");
+			player1.bulletdamagevar += 50;
+			player2.bulletdamagevar += 50;
+			player1.gold -= 50;
+			player2.gold -= 50;
 		}
 		
 	}
@@ -1077,80 +1268,85 @@ var GameState = function(){
 	function speed1upgrade()
 	{
 		var goldneeded = 5;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletspeed += 5;
-			PhaserGame.player2.bulletspeed += 5;
-			PhaserGame.player1.gold -= 5;
-			PhaserGame.player2.gold -= 5;
+			console.log("Bought");
+			player1.bulletspeed += 5;
+			player2.bulletspeed += 5;
+			player1.gold -= 5;
+			player2.gold -= 5;
 		}
 	}
 	
 	function speed2upgrade()
 	{
 		var goldneeded = 10;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletspeed += 10;
-			PhaserGame.player2.bulletspeed += 10;
-			PhaserGame.player1.gold -= 10;
-			PhaserGame.player2.gold -= 10;
+			console.log("Bought");
+			player1.bulletspeed += 10;
+			player2.bulletspeed += 10;
+			player1.gold -= 10;
+			player2.gold -= 10;
 		}
 	}
 	
 	function speed3upgrade()
 	{
 		var goldneeded = 15;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletspeed += 15;
-			PhaserGame.player2.bulletspeed += 15;
-			PhaserGame.player1.gold -= 15;
-			PhaserGame.player2.gold -= 15;
+			console.log("Bought");
+			player1.bulletspeed += 15;
+			player2.bulletspeed += 15;
+			player1.gold -= 15;
+			player2.gold -= 15;
 		}
 	}
 	
 	function speed4upgrade()
 	{
 		var goldneeded = 20;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletspeed += 20;
-			PhaserGame.player2.bulletspeed += 20;
-			PhaserGame.player1.gold -= 20;
-			PhaserGame.player2.gold -= 20;
+			console.log("Bought");
+			player1.bulletspeed += 20;
+			player2.bulletspeed += 20;
+			player1.gold -= 20;
+			player2.gold -= 20;
 		}
 	}
 	
 	function speed5upgrade()
 	{
 		var goldneeded = 50;
-		if(gold < goldneeded)
+		if(player1.gold < goldneeded)
 		{
 			//
 		}
 		else
 		{
-			PhaserGame.player1.bulletspeed += 50;
-			PhaserGame.player2.bulletspeed += 50;
-			PhaserGame.player1.gold -= 50;
-			PhaserGame.player2.gold -= 50;
+			console.log("Bought");
+			player1.bulletspeed += 50;
+			player2.bulletspeed += 50;
+			player1.gold -= 50;
+			player2.gold -= 50;
 		}
 	}
     
@@ -1168,6 +1364,7 @@ var GameState = function(){
     
     
     function optionClick(){
+		settingsButton.visible =! settingsButton.visible;
         option_menu.visible =! option_menu.visible;
     }
     function overOption(){
@@ -1178,6 +1375,12 @@ var GameState = function(){
        console.log('button up', arguments);
     }
     
+	function settings()
+	{
+		
+	}
+	
+	
     function helpClick(){
         help_menu.visible =! help_menu.visible;
     }
