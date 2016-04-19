@@ -14,7 +14,6 @@
     
     //turrets
     var turrets = [];
-    var tindex = 0;
     
     var wall;
     var wallHealth;
@@ -141,14 +140,10 @@ var eurecaClientSetup = function(){
 	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId, x, y){
 		if(p_Id == 1){
 			console.log("PLAYER 1 UP" + player1.alien.body.y);
-			/*player1.alien.x = x;
-			player1.alien.y = y;*/
 			player1.alien.body.velocity.y = -200;
 		}
 		if(p_Id == 2){
 			console.log("PLAYER 2 UP" + player2.alien.body.y);
-			/*player2.alien.x = x;
-			player2.alien.y = y;*/
 			player2.alien.body.velocity.y = -200;
 		}
 	}
@@ -156,15 +151,11 @@ var eurecaClientSetup = function(){
 	eurecaClient.exports.movePlayerDown = function(p_Id, eurecaId,x,y){
 		if(p_Id == 1){
 			console.log("PLAYER 1 DOWN" + player1.alien.body.y);
-			/*player1.alien.x = x;
-			player1.alien.y = y;*/
 			player1.alien.body.velocity.y = 200;
 			
 		}
 		if(p_Id == 2){
 			console.log("PLAYER 2 DOWN" + player2.alien.body.y);
-			/*player2.alien.x = x;
-			player2.alien.y = y;*/
 			player2.alien.body.velocity.y = 200;
 		}
 	}
@@ -179,6 +170,28 @@ var eurecaClientSetup = function(){
 			player2.alien.y = y;
 		}
 	}	
+	
+	eurecaClient.exports.switchWeapon = function(p_Id, weapon){
+		if(p_Id == 1){
+			player1.weaponSwitch(weapon);
+		}
+		if(p_Id == 2){
+			player2.weaponSwitch(weapon);
+		}
+	}	
+	
+	eurecaClient.exports.fire = function(p_Id){
+		if(p_Id == 1){
+			player1.fireWeapon();
+		}
+		if(p_Id == 2){
+			player2.fireWeapon();
+		}
+	}	
+	
+	eurecaClient.exports.placeTurret = function(){
+		placeTurret();
+	}
 	
 };
 
@@ -310,45 +323,25 @@ Player.prototype.update = function(){
     this.alien.body.velocity.set(0);
 //weapon switch
     if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
-		console.log("weapon 1");
-        this.currentWeapon = 1;
-        this.alien.frame = 0;
+		eurecaServer.switchWeapon(playerIndex, 1);
     }
     else if(this.game.input.keyboard.isDown(Phaser.Keyboard.TWO)){
-		console.log("weapon 2");
-        this.currentWeapon = 2;
-        this.alien.frame = 1;
+		eurecaServer.switchWeapon(playerIndex, 2);
     }
     else if(this.game.input.keyboard.isDown(Phaser.Keyboard.THREE)){
-		console.log("weapon 3");
-        this.currentWeapon = 3;
-        this.alien.frame = 2;
+		eurecaServer.switchWeapon(playerIndex, 3);
     }
-	
+
+//helloWorld test	
 	if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
 		console.log("Trying to helloWorld");
 		eurecaServer.helloWorld(playerIndex);
 	}
     
 
-//weapon fire    
-    if(this.currentWeapon == 1){
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-            this.fireRifle();
-        }
-    }
-    else if(this.currentWeapon == 2){
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-            this.fireMachine();
-        }
-    }
-    else if(this.currentWeapon ==3){
-        if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-            this.fireRocket();
-        }
-    }
-    else{
-        this.currentWeapon = 1;
+//weapon fire  
+	if(this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+            eurecaServer.fire(playerIndex);
     }
 };
 ////////////////////////////////////////////////////////////////////
@@ -429,6 +422,14 @@ Turret.prototype.fireTurret = function(){
 Turret.prototype.update = function(){
     this.fireTurret();
 };
+////////////////////////////////////////////////////////////////////
+//  Place Turret
+////////////////////////////////////////////////////////////////////
+placeTurret = function(){
+	var newturret = new Turret(game, turrets.length);
+    turrets.push(newturret);
+    flipFlop = true;
+}
 ////////////////////////////////////////////////////////////////////
 //  Preload
 ////////////////////////////////////////////////////////////////////
@@ -733,6 +734,8 @@ if(player1 != null && player2 != null){
 				eurecaServer.movePlayerDown(playerIndex, myId, player2.alien.x, player2.alien.y);
 			}
 		}
+		
+
         
         
 //Mob/Projectile Interaction Handling            
@@ -745,15 +748,12 @@ if(player1 != null && player2 != null){
             game.physics.arcade.overlap(player2.rBullets,mobs,collidehandler,null,game);
 
 //turret handling            
-            if(game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && tindex < 8){
+            if(game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && turrets.length < 8){
                 if(!flipFlop){
-                    var newturret = new Turret(game, tindex);
-                    turrets.push(newturret);
-                    tindex = turrets.length;
-                    flipFlop = true;
+                    eurecaServer.placeTurret();
                 }
             }
-            if(!game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
+            else if(!game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
                 flipFlop = false;
             }
             

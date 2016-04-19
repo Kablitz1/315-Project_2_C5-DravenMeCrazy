@@ -13,7 +13,7 @@ var playerIndex = 0;
 var Eureca = require('eureca.io');
 
 //ADD MORE CLIENT FUNCTIONS LATER
-var eurecaServer = new Eureca.Server({allow:['setID', 'helloWorld', 'spawnPlayer', 'movePlayerUp', 'movePlayerDown', 'updateState']});
+var eurecaServer = new Eureca.Server({allow:['setID', 'helloWorld', 'spawnPlayer', 'movePlayerUp', 'movePlayerDown', 'updateState', 'switchWeapon', 'fire', 'placeTurret']});
 
 console.log('Print Test');
 
@@ -132,6 +132,39 @@ eurecaServer.exports.updateState = function(p_Id, eurecaId, x, y){
 		for (var cc in clients)
 		{		
 			remote.updateState(p_Id, eurecaId, x, y);		
+		}
+	}
+};
+
+eurecaServer.exports.switchWeapon = function(p_Id, weapon){
+      for (var c in clients)
+	{
+		var remote = clients[c].remote;
+		for (var cc in clients)
+		{		
+			remote.switchWeapon(p_Id, weapon);		
+		}
+	}
+};
+
+eurecaServer.exports.fire = function(p_Id){
+      for (var c in clients)
+	{
+		var remote = clients[c].remote;
+		for (var cc in clients)
+		{		
+			remote.fire(p_Id);		
+		}
+	}
+};
+
+eurecaServer.exports.placeTurret = function(){
+      for (var c in clients)
+	{
+		var remote = clients[c].remote;
+		for (var cc in clients)
+		{		
+			remote.placeTurret();		
 		}
 	}
 };
