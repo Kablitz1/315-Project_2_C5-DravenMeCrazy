@@ -125,4 +125,4 @@ eurecaServer.exports.movePlayerDown = function(p_Id, eurecaId){
 	}
 };
 
-server.listen(12335);
+server.listen(12336);

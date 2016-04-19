@@ -131,7 +131,7 @@ var eurecaClientSetup = function(){
 	}
 	
 	eurecaClient.exports.spawnPlayer = function(clientId, iplayerIndex){
-		game = new Phaser.Game(1920, 900, Phaser.AUTO, 'game', {preload: preload, create: create, update: update});
+		game = new Phaser.Game(1920, 900, Phaser.WEBGL, 'game', {preload: preload, create: create, update: update});
 		if(game != null){
 			console.log("Set Game Properly");
 		}
