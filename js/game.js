@@ -162,12 +162,16 @@ var eurecaClientSetup = function(){
 	
 	eurecaClient.exports.updateState = function(p_Id, eurecaId, playerx, playery){
 		if(p_Id == 1){
-			player1.alien.x = x;
-			player1.alien.y = y;
+			if(player1.alien.y >= 80 && player1.alien.y <= game.world.height - 200){
+				player1.alien.x = playerx;
+				player1.alien.y = playery;
+			}
 		}
 		if(p_Id == 2){
-			player2.alien.x = x;
-			player2.alien.y = y;
+			if(player2.alien.y >= 80 && player2.alien.y <= game.world.height - 200){
+				player2.alien.x = playerx;
+				player2.alien.y = playery;
+			}
 		}
 	}	
 	
