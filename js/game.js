@@ -753,8 +753,18 @@ if(player1 != null && player2 != null){
 
 //turret handling            
             if(game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && turrets.length < 8){
-                if(!flipFlop){
-                    eurecaServer.placeTurret();
+            	
+            	goldneeded = 20;
+		if(player1.gold < goldneeded)
+		{
+		
+		//	
+		}
+                else if(!flipFlop)
+                {
+			player1.gold = player1.gold - 20;
+			player2.gold = player2.gold - 20;
+                    	eurecaServer.placeTurret();
                 }
             }
             else if(!game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
@@ -807,6 +817,19 @@ if(player1 != null && player2 != null){
 			player1.gold += 1;
 			player2.gold += 1;
             deadmobs ++;
+            
+            if(round === 10)
+            {
+            	if(deadmobs === mobnumber)
+		{
+			stateText.text = " You Won, \n Click to Continue on the the next round";
+			stateText.visible = true;
+			game.input.onTap.addOnce(restart,this);
+		}
+		//stateText.text = " You Won, \n Click to Continue on the the next round";
+                //stateText.visible = true;
+		//game.input.onTap.addOnce(restart,this);
+	   }
             
             if(deadmobs === mobnumber )
             {
@@ -986,10 +1009,10 @@ if(player1 != null && player2 != null){
 				wavex += 12;
 				wavey += 10;
 			}
-			var boss = mobs.create(1700,400,'boss_sprite');
-            //boss.body.velocity.x = 100;
-            boss.body.gravity.y = 0;
-            boss.health = 5000;
+		var boss = mobs.create(1900,300,'boss_sprite');
+            	boss.body.velocity.x = 75;
+            	boss.body.gravity.y = 0;
+            	boss.health = 10000;
 				
 			break;
         
