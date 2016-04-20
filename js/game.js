@@ -195,7 +195,7 @@ var eurecaClientSetup = function(){
 		}
 	}
 	
-	eurecaClient.exports.updateState = function(p_Id, eurecaId, playerx, playery){
+	eurecaClient.exports.updateState = function(p_Id, eurecaId, playerx, playery, mobarrayx, mobarrayy){
 		/*if(p_Id == 1){
 			//player1.alien.x = x;
 			player1.alien.y = y;
@@ -204,6 +204,15 @@ var eurecaClientSetup = function(){
 			//player2.alien.x = x;
 			player2.alien.y = y;
 		}*/
+		if(p_Id == 1){
+			for(var i = 0; i < mobarrayx.length; i++){
+				mobs.getAt(i).x = mobarrayx[i];
+				mobs.getAt(i).y = mobarrayy[i];
+			}
+		}
+		if(p_Id == 2){
+			
+		}
 	}	
 	
 	eurecaClient.exports.switchWeapon = function(p_Id, weapon){
@@ -730,18 +739,37 @@ placeTurret = function(){
 ////////////////////////////////////////////////////////////////////
 //  Gamestate Update Function
 ///////////////////////////////////////////////////////////////////
-
+var loop5 = 0;//this is so certain functions only happen every 5 updates
         function update () {
 if(player1 != null && player2 != null){
+			
+	
 			if(playerIndex === 1){
 				//player2.alien.body.velocity.set(0);
 				player1.update();
-				eurecaServer.updateState(playerIndex, myId, player1.alien.x, player1.alien.y);
 			}
 			if(playerIndex === 2){
 				//player1.alien.body.velocity.set(0);
 				player2.update();
-				eurecaServer.updateState(playerIndex, myId, player2.alien.x, player2.alien.y);
+			}
+			
+			loop5++;
+			if(loop5 > 5){
+				if(playerIndex === 1){
+					var mobarrayx = [];
+					var mobarrayy = [];
+					for(var i = 0; i < mobs.length; i++){
+						mobarrayx[i] = mobs.getAt(i).x;
+						mobarrayy[i] = mobs.getAt(i).y;
+					}
+					eurecaServer.updateState(playerIndex, myId, player1.alien.x, player1.alien.y, mobarrayx, mobarrayy);
+				}
+				if(playerIndex === 2){
+					//var mobarrayx = [];
+					//var mobarrayy = [];
+					//eurecaServer.updateState(playerIndex, myId, player2.alien.x, player2.alien.y, mobarrayx, mobarrayy);
+				}
+				loop5 = 0;
 			}
 		
         
