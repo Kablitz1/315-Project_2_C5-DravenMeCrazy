@@ -1005,10 +1005,10 @@ if(player1 != null && player2 != null){
 				wavex += 12;
 				wavey += 10;
 			}
-			var boss = mobs.create(1700,400,'boss_sprite');
-            //boss.body.velocity.x = 100;
-            boss.body.gravity.y = 0;
-            boss.health = 5000;
+		var boss = mobs.create(1900,300,'boss_sprite');
+            	boss.body.velocity.x = 75;
+            	boss.body.gravity.y = 0;
+            	boss.health = 10000;
 				
 			break;
         
