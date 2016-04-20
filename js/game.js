@@ -140,39 +140,70 @@ var eurecaClientSetup = function(){
 	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId, x, y){
 		if(p_Id == 1){
 			console.log("PLAYER 1 UP" + player1.alien.body.y);
-			player1.alien.body.velocity.y = -200;
+			//player1.alien.body.velocity.y = -200;
+			//player1.alien.y += -1;
+			
+			if(player1.alien.body.y >= 80){
+				console.log("UP KEY");
+				//player1.alien.body.velocity.y = -player1.game.speed;
+				//player1.alien.body.y = 500;
+				//player1.alien.body.velocity.y = -200;
+				player1.alien.y += -1;
+			}
 		}
 		if(p_Id == 2){
 			console.log("PLAYER 2 UP" + player2.alien.body.y);
-			player2.alien.body.velocity.y = -200;
+			//player2.alien.body.velocity.y = -200;
+			//player2.alien.y += -1;
+			
+			if(player2.alien.body.y >= 80){
+				console.log("UP KEY");
+				//player2.alien.body.velocity.y = -player2.game.speed;
+				//player2.alien.body.y = 500;
+				//player2.alien.body.velocity.y = -200;
+				player2.alien.y += -1;
+			}
 		}
 	}
 	
 	eurecaClient.exports.movePlayerDown = function(p_Id, eurecaId,x,y){
 		if(p_Id == 1){
 			console.log("PLAYER 1 DOWN" + player1.alien.body.y);
-			player1.alien.body.velocity.y = 200;
+			//player1.alien.body.velocity.y = 200;
+			//player1.alien.y += 1;
 			
+			if(player1.alien.body.y <= player1.game.world.height - 200){
+				console.log("UP KEY");
+				//player1.alien.body.velocity.y = -player1.game.speed;
+				//player1.alien.body.y = 500;
+				//player1.alien.body.velocity.y = 200;
+				player1.alien.y += 1;
+			}
 		}
 		if(p_Id == 2){
 			console.log("PLAYER 2 DOWN" + player2.alien.body.y);
-			player2.alien.body.velocity.y = 200;
+			//player2.alien.body.velocity.y = 200;
+			//player2.alien.y += 1;
+			
+			if(player2.alien.body.y <= player2.game.world.height - 200){
+				console.log("UP KEY");
+				//player2.alien.body.velocity.y = -player2.game.speed;
+				//player2.alien.body.y = 500;
+				//player2.alien.body.velocity.y = 200;
+				player2.alien.y += 1;
+			}
 		}
 	}
 	
 	eurecaClient.exports.updateState = function(p_Id, eurecaId, playerx, playery){
-		if(p_Id == 1){
-			if(player1.alien.y >= 80 && player1.alien.y <= game.world.height - 200){
-				player1.alien.x = playerx;
-				player1.alien.y = playery;
-			}
+		/*if(p_Id == 1){
+			//player1.alien.x = x;
+			player1.alien.y = y;
 		}
 		if(p_Id == 2){
-			if(player2.alien.y >= 80 && player2.alien.y <= game.world.height - 200){
-				player2.alien.x = playerx;
-				player2.alien.y = playery;
-			}
-		}
+			//player2.alien.x = x;
+			player2.alien.y = y;
+		}*/
 	}	
 	
 	eurecaClient.exports.switchWeapon = function(p_Id, weapon){
@@ -324,7 +355,7 @@ Player.prototype.fireRocket = function(){
 ////////////////////////////////////////////////////////////////////
 Player.prototype.update = function(){
 
-    this.alien.body.velocity.set(0);
+    //this.alien.body.velocity.set(0);
 //weapon switch
     if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
 		eurecaServer.switchWeapon(playerIndex, 1);
@@ -703,12 +734,12 @@ placeTurret = function(){
         function update () {
 if(player1 != null && player2 != null){
 			if(playerIndex === 1){
-				player2.alien.body.velocity.set(0);
+				//player2.alien.body.velocity.set(0);
 				player1.update();
 				eurecaServer.updateState(playerIndex, myId, player1.alien.x, player1.alien.y);
 			}
 			if(playerIndex === 2){
-				player1.alien.body.velocity.set(0);
+				//player1.alien.body.velocity.set(0);
 				player2.update();
 				eurecaServer.updateState(playerIndex, myId, player2.alien.x, player2.alien.y);
 			}
@@ -835,7 +866,7 @@ if(player1 != null && player2 != null){
             {
                 if(round <= 10 )
                 {
-                    stateText.text = " You Won, \n Click to Continue on the the next round";
+                    stateText.text = " You Won, \n Click to Continue on to the next round";
                     stateText.visible = true;
                 }
                 
