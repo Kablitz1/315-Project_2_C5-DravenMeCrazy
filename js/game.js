@@ -18,6 +18,7 @@
     var wall;
     var wallHealth;
     var wallFrequency = 0;
+	var wallnum = 100;
     
     //backgrounds
     var background;
@@ -68,6 +69,16 @@
     var gunspeedButton4;
     var gunspeedButton5;
 	
+	//wall
+	
+	var healthincrease1;
+	var healthincrease2;
+	var healthincrease3;
+	var healthincrease4;
+	var healthincrease5;
+	
+	
+	
     var helpButton;
 	
     var optionButton;
@@ -77,6 +88,7 @@
     var mobs;
     var mobnumber = 5;
     var deadmobs = 0;
+	var mobdamage = 1;
     
     
     //round state
@@ -140,68 +152,36 @@ var eurecaClientSetup = function(){
 	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId, x, y){
 		if(p_Id == 1){
 			console.log("PLAYER 1 UP" + player1.alien.body.y);
-			//player1.alien.body.velocity.y = -200;
-			//player1.alien.y += -1;
-			
-			if(player1.alien.body.y >= 80){
-				console.log("UP KEY");
-				//player1.alien.body.velocity.y = -player1.game.speed;
-				//player1.alien.body.y = 500;
-				//player1.alien.body.velocity.y = -200;
-				player1.alien.y += -1;
-			}
+			player1.alien.body.velocity.y = -200;
 		}
 		if(p_Id == 2){
 			console.log("PLAYER 2 UP" + player2.alien.body.y);
-			//player2.alien.body.velocity.y = -200;
-			//player2.alien.y += -1;
-			
-			if(player2.alien.body.y >= 80){
-				console.log("UP KEY");
-				//player2.alien.body.velocity.y = -player2.game.speed;
-				//player2.alien.body.y = 500;
-				//player2.alien.body.velocity.y = -200;
-				player2.alien.y += -1;
-			}
+			player2.alien.body.velocity.y = -200;
 		}
 	}
 	
 	eurecaClient.exports.movePlayerDown = function(p_Id, eurecaId,x,y){
 		if(p_Id == 1){
 			console.log("PLAYER 1 DOWN" + player1.alien.body.y);
-			//player1.alien.body.velocity.y = 200;
-			//player1.alien.y += 1;
+			player1.alien.body.velocity.y = 300;
 			
-			if(player1.alien.body.y <= player1.game.world.height - 200){
-				console.log("UP KEY");
-				//player1.alien.body.velocity.y = -player1.game.speed;
-				//player1.alien.body.y = 500;
-				//player1.alien.body.velocity.y = 200;
-				player1.alien.y += 1;
-			}
 		}
 		if(p_Id == 2){
 			console.log("PLAYER 2 DOWN" + player2.alien.body.y);
-			//player2.alien.body.velocity.y = 200;
-			//player2.alien.y += 1;
-			
-			if(player2.alien.body.y <= player2.game.world.height - 200){
-				console.log("UP KEY");
-				//player2.alien.body.velocity.y = -player2.game.speed;
-				//player2.alien.body.y = 500;
-				//player2.alien.body.velocity.y = 200;
-				player2.alien.y += 1;
-			}
+			player2.alien.body.velocity.y = 300;
 		}
 	}
 	
 	eurecaClient.exports.updateState = function(p_Id, eurecaId, playerx, playery, mobarrayx, mobarrayy){
 		/*if(p_Id == 1){
 			//player1.alien.x = x;
+	eurecaClient.exports.updateState = function(p_Id, eurecaId, playerx, playery){
+		if(p_Id == 1){
+			player1.alien.x = x;
 			player1.alien.y = y;
 		}
 		if(p_Id == 2){
-			//player2.alien.x = x;
+			player2.alien.x = x;
 			player2.alien.y = y;
 		}*/
 		if(p_Id == 1){
@@ -209,9 +189,6 @@ var eurecaClientSetup = function(){
 				mobs.getAt(i).x = mobarrayx[i];
 				mobs.getAt(i).y = mobarrayy[i];
 			}
-		}
-		if(p_Id == 2){
-			
 		}
 	}	
 	
@@ -364,7 +341,7 @@ Player.prototype.fireRocket = function(){
 ////////////////////////////////////////////////////////////////////
 Player.prototype.update = function(){
 
-    //this.alien.body.velocity.set(0);
+    this.alien.body.velocity.set(0);
 //weapon switch
     if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
 		eurecaServer.switchWeapon(playerIndex, 1);
@@ -515,6 +492,7 @@ placeTurret = function(){
             game.load.spritesheet('upgrade_button_spritesheet', asset_location + 'upgrade_button_spritesheet.png', 193, 80);
             game.load.spritesheet('option_button_spritesheet', asset_location + 'option_button_spritesheet.png', 193, 80);
             game.load.spritesheet('help_button_spritesheet', asset_location + 'help_button_spritesheet.png', 193, 80);
+			
 			game.load.image('power1button',asset_location + 'power1button.jpg');
 			game.load.image('power2button',asset_location + 'power2button.jpg');
 			game.load.image('power3button',asset_location + 'power3button.jpg');
@@ -526,6 +504,13 @@ placeTurret = function(){
 			game.load.image('speed3button',asset_location + 'speed3button.jpg');
 			game.load.image('speed4button',asset_location + 'speed4button.jpg');
 			game.load.image('speed5button',asset_location + 'speed5button.jpg');
+			
+			game.load.image('Health1button',asset_location + 'Health1button.jpg');
+			game.load.image('Health2button',asset_location + 'Health2button.jpg');
+			game.load.image('Health3button',asset_location + 'Health3button.jpg');
+			game.load.image('Health4button',asset_location + 'Health4button.jpg');
+			game.load.image('Health5button',asset_location + 'Health5button.jpg');
+			
 			
 			game.load.image('settingsbutton',asset_location + 'settingsbutton.jpg');
             
@@ -549,7 +534,7 @@ placeTurret = function(){
 
             wall = game.add.sprite(0, 0, 'wall_moblane_sprite');//makes wall and moblanes
             //giving wall health attributes
-            wall.health = 100;
+            wall.health = wallnum;
           
 //Making Buttons
             upgradeButton = game.add.button(game.world.centerX -100, game.world.height - 100,'upgrade_button_spritesheet', upgradeClick, game, 2, 1, 0); //2, 1, 0 are frames of spritesheet
@@ -606,58 +591,76 @@ placeTurret = function(){
             upgrade_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'upgrade_menu'); //makes upgrade menu
             upgrade_menu.visible =! upgrade_menu.visible;
             
-//turret upgrade buttons
+			//turret upgrade buttons
 			
-	    powerButton1 = game.add.button(765,255,"power1button",power1upgrade,game,0);
-	    powerButton1.visible =! powerButton1.visible;
+			powerButton1 = game.add.button(765,255,"power1button",power1upgrade,game,0);
+			powerButton1.visible =! powerButton1.visible;
 			
-	    powerButton2 = game.add.button(774,330,"power2button",power2upgrade,game,0);
-	    powerButton2.visible =! powerButton2.visible;
+			powerButton2 = game.add.button(774,330,"power2button",power2upgrade,game,0);
+			powerButton2.visible =! powerButton2.visible;
 			
-	    powerButton3 = game.add.button(770,410,"power3button",power3upgrade,game,0);
-	    powerButton3.visible =! powerButton3.visible;
+			powerButton3 = game.add.button(770,410,"power3button",power3upgrade,game,0);
+			powerButton3.visible =! powerButton3.visible;
 			
-	    powerButton4 = game.add.button(775,490,"power4button",power4upgrade,game,0);
-	    powerButton4.visible =! powerButton4.visible;
+			powerButton4 = game.add.button(775,490,"power4button",power4upgrade,game,0);
+			powerButton4.visible =! powerButton4.visible;
 			
-	    powerButton5 = game.add.button(770,565,"power5button",power5upgrade,game,0);
-	    powerButton5.visible =! powerButton5.visible;
+			powerButton5 = game.add.button(770,565,"power5button",power5upgrade,game,0);
+			powerButton5.visible =! powerButton5.visible;
             
-	    //gun upgrade buttons
+			//gun upgrade buttons
 			
-	    gunspeedButton1 = game.add.button(920,255,"speed1button",speed1upgrade,game,0);
-	    gunspeedButton1.visible =! gunspeedButton1.visible;
+			gunspeedButton1 = game.add.button(920,255,"speed1button",speed1upgrade,game,0);
+			gunspeedButton1.visible =! gunspeedButton1.visible;
 			
-	    gunspeedButton2 = game.add.button(915,333,"speed2button",speed2upgrade,game,0);
-	    gunspeedButton2.visible =! gunspeedButton2.visible;
+			gunspeedButton2 = game.add.button(915,333,"speed2button",speed2upgrade,game,0);
+			gunspeedButton2.visible =! gunspeedButton2.visible;
 			
-	    gunspeedButton3 = game.add.button(922,405,"speed3button",speed3upgrade,game,0);
-	    gunspeedButton3.visible =! gunspeedButton3.visible;
+			gunspeedButton3 = game.add.button(922,405,"speed3button",speed3upgrade,game,0);
+			gunspeedButton3.visible =! gunspeedButton3.visible;
 			
-	    gunspeedButton4 = game.add.button(922,490,"speed4button",speed4upgrade,game,0);
-	    gunspeedButton4.visible =! gunspeedButton4.visible;
+			gunspeedButton4 = game.add.button(922,490,"speed4button",speed4upgrade,game,0);
+			gunspeedButton4.visible =! gunspeedButton4.visible;
 			
-	    gunspeedButton5 = game.add.button(922,565,"speed5button",speed5upgrade,game,0);
-	    gunspeedButton5.visible =! gunspeedButton5.visible;
-			
-			
-	    gunpowerButton1 = game.add.button(1030,255,"power1button",gunpower1upgrade,game,0);
-	    gunpowerButton1.visible =! gunpowerButton1.visible;
-			
-	    gunpowerButton2 = game.add.button(1036,333,"power2button",gunpower2upgrade,game,0);
-	    gunpowerButton2.visible =! gunpowerButton2.visible;
-			
-	    gunpowerButton3 = game.add.button(1030,405,"power3button",gunpower3upgrade,game,0);
-	    gunpowerButton3.visible =! gunpowerButton3.visible;
-			
-	    gunpowerButton4 = game.add.button(1035,490,"power4button",gunpower4upgrade,game,0);
-	    gunpowerButton4.visible =! gunpowerButton4.visible;
-			
-	    gunpowerButton5 = game.add.button(1030,565,"power5button",gunpower5upgrade,game,0);
-	    gunpowerButton5.visible =! gunpowerButton5.visible;
+			gunspeedButton5 = game.add.button(922,565,"speed5button",speed5upgrade,game,0);
+			gunspeedButton5.visible =! gunspeedButton5.visible;
 			
 			
-//wall upgrade buttons
+			gunpowerButton1 = game.add.button(1030,255,"power1button",gunpower1upgrade,game,0);
+			gunpowerButton1.visible =! gunpowerButton1.visible;
+			
+			gunpowerButton2 = game.add.button(1036,333,"power2button",gunpower2upgrade,game,0);
+			gunpowerButton2.visible =! gunpowerButton2.visible;
+			
+			gunpowerButton3 = game.add.button(1030,405,"power3button",gunpower3upgrade,game,0);
+			gunpowerButton3.visible =! gunpowerButton3.visible;
+				
+			gunpowerButton4 = game.add.button(1035,490,"power4button",gunpower4upgrade,game,0);
+			gunpowerButton4.visible =! gunpowerButton4.visible;
+				
+			gunpowerButton5 = game.add.button(1030,565,"power5button",gunpower5upgrade,game,0);
+			gunpowerButton5.visible =! gunpowerButton5.visible;
+			
+			
+			//wall upgrade buttons
+			
+			healthincrease1 = game.add.button(1300,255,"Health1button",health1upgrade,game,0)
+			healthincrease1.visible =! healthincrease1.visible;
+			
+			healthincrease2 = game.add.button(1300,333,"Health2button",health2upgrade,game,0)
+			healthincrease2.visible =! healthincrease2.visible;
+			
+			healthincrease3 = game.add.button(1295,410,"Health3button",health3upgrade,game,0)
+			healthincrease3.visible =! healthincrease3.visible;
+			
+			healthincrease4 = game.add.button(1300,495,"Health4button",health4upgrade,game,0)
+			healthincrease4.visible =! healthincrease4.visible;
+			
+			healthincrease5 = game.add.button(1300,570,"Health5button",health5upgrade,game,0)
+			healthincrease5.visible =! healthincrease5.visible;
+			
+			
+			
             option_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'option_menu');
             option_menu.visible =! option_menu.visible;
 			
@@ -745,11 +748,11 @@ if(player1 != null && player2 != null){
 			
 	
 			if(playerIndex === 1){
-				//player2.alien.body.velocity.set(0);
+				player2.alien.body.velocity.set(0);
 				player1.update();
 			}
 			if(playerIndex === 2){
-				//player1.alien.body.velocity.set(0);
+				player1.alien.body.velocity.set(0);
 				player2.update();
 			}
 			
@@ -812,18 +815,15 @@ if(player1 != null && player2 != null){
 
 //turret handling            
             if(game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && turrets.length < 8){
-            	
-            	goldneeded = 20;
-		if(player1.gold < goldneeded)
-		{
-		
-		//	
-		}
-                else if(!flipFlop)
-                {
-			player1.gold = player1.gold - 20;
-			player2.gold = player2.gold - 20;
-                    	eurecaServer.placeTurret();
+				goldneeded = 1;
+				if(player1.gold < goldneeded)
+				{
+					//
+				}
+                else if(!flipFlop){
+					player1.gold = player1.gold - 1;
+					player2.gold = player2.gold - 1;
+                    eurecaServer.placeTurret();
                 }
             }
             else if(!game.input.keyboard.isDown(Phaser.Keyboard.FOUR)){
@@ -876,25 +876,26 @@ if(player1 != null && player2 != null){
 			player1.gold += 1;
 			player2.gold += 1;
             deadmobs ++;
-            
-            if(round === 10)
-            {
-            	if(deadmobs === mobnumber)
-		{
-			stateText.text = " You Won, \n Click to Continue on the the next round";
-			stateText.visible = true;
-			game.input.onTap.addOnce(restart,this);
-		}
-		//stateText.text = " You Won, \n Click to Continue on the the next round";
+			
+			
+			if(round === 10)
+			{
+				if(deadmobs === mobnumber)
+				{
+					stateText.text = " You Won, \n Click to Continue on the the next round";
+					stateText.visible = true;
+					game.input.onTap.addOnce(restart,this);
+				}
+				//stateText.text = " You Won, \n Click to Continue on the the next round";
                 //stateText.visible = true;
-		//game.input.onTap.addOnce(restart,this);
-	   }
+				//game.input.onTap.addOnce(restart,this);
+			}
             
             if(deadmobs === mobnumber )
             {
                 if(round <= 10 )
                 {
-                    stateText.text = " You Won, \n Click to Continue on to the next round";
+                    stateText.text = " You Won, \n Click to Continue on the the next round";
                     stateText.visible = true;
                 }
                 
@@ -917,7 +918,7 @@ if(player1 != null && player2 != null){
         }
         else{
             //mob is now attacking wall
-            wall.health = wall.health - 1;
+            wall.health = wall.health - mobdamage;
            console.log(wall.health);
         }
     }
@@ -939,7 +940,7 @@ if(player1 != null && player2 != null){
 				var mob =  mobs.create(1950 - wavex , wavey + 100,'mob_sprite');
 				mob.body.velocity.x = -100;
 				mob.body.gravity.y = 0;
-				mob.health = 250;
+				mob.health = 2;
 				wavex += 10;
 				wavey += 140;
 			}
@@ -950,11 +951,12 @@ if(player1 != null && player2 != null){
 			for( var i = 0; i < mobnumber; i ++)
 			{
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
-				mob.body.velocity.x = -100;
+				mob.body.velocity.x = -105;
 				mob.body.gravity.y = 0;
-				mob.health = 250;
+				mob.health = 2;
 				wavex += 5;
 				wavey += 65;
+				mobdamage = 2;
 			}
 			break;
 			
@@ -964,11 +966,12 @@ if(player1 != null && player2 != null){
 			for( var i = 0; i < mobnumber; i ++)
 			{
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
-				mob.body.velocity.x = -100;
+				mob.body.velocity.x = -110;
 				mob.body.gravity.y = 0;
-				mob.health = 250;
+				mob.health = 2;
 				wavex += 5;
 				wavey += 45;
+				mobdamage = 3;
 			}
 			break;
 			
@@ -978,11 +981,12 @@ if(player1 != null && player2 != null){
 			for( var i = 0; i < mobnumber; i ++)
 			{
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
-				mob.body.velocity.x = -100;
+				mob.body.velocity.x = -110;
 				mob.body.gravity.y = 0;
-				mob.health = 250;
+				mob.health = 2;
 				wavex += 5;
 				wavey += 30;
+				mobdamage = 3;
 			}
 			break;
 			
@@ -992,11 +996,12 @@ if(player1 != null && player2 != null){
 			for( var i = 0; i < mobnumber; i ++)
 			{
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
-				mob.body.velocity.x = -100;
+				mob.body.velocity.x = -95;
 				mob.body.gravity.y = 0;
-				mob.health = 250;
+				mob.health = 5;
 				wavex += 10;
 				wavey += 20;
+				mobdamage = 1;
 			}
 			break;
 			
@@ -1008,9 +1013,10 @@ if(player1 != null && player2 != null){
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
 				mob.body.velocity.x = -100;
 				mob.body.gravity.y = 0;
-				mob.health = 250;
+				mob.health = 3;
 				wavex += 10;
 				wavey += 15;
+				mobdamage = 5;
 			}
 			break;
 			
@@ -1020,11 +1026,12 @@ if(player1 != null && player2 != null){
 			for( var i = 0; i < mobnumber; i ++)
 			{
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
-				mob.body.velocity.x = -100;
+				mob.body.velocity.x = -150;
 				mob.body.gravity.y = 0;
-				mob.health = 250;
+				mob.health = 5;
 				wavex += 5;
 				wavey += 15;
+				mobdamage = 5;
 			}
 			break;
 			
@@ -1034,11 +1041,12 @@ if(player1 != null && player2 != null){
 			for( var i = 0; i < mobnumber; i ++)
 			{
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
-				mob.body.velocity.x = -100;
+				mob.body.velocity.x = -115;
 				mob.body.gravity.y = 0;
-				mob.health = 250;
+				mob.health = 7;
 				wavex += 15;
 				wavey += 10;
+				mobdamage = 1;
 			}
 			break;
 			
@@ -1048,11 +1056,12 @@ if(player1 != null && player2 != null){
 			for( var i = 0; i < mobnumber; i ++)
 			{
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
-				mob.body.velocity.x = -100;
+				mob.body.velocity.x = -80;
 				mob.body.gravity.y = 0;
-				mob.health = 250;
+				mob.health = 1;
 				wavex += 12;
 				wavey += 10;
+				mobdamage = 1;
 			}
 			break;
 			
@@ -1064,14 +1073,16 @@ if(player1 != null && player2 != null){
 				var mob =  mobs.create(1950 - wavex,wavey + 100,'mob_sprite');
 				mob.body.velocity.x = -100;
 				mob.body.gravity.y = 0;
-				mob.health = 250;
+				mob.health = 2;
 				wavex += 12;
 				wavey += 10;
+				mobdamage = 5;
 			}
-		var boss = mobs.create(1900,300,'boss_sprite');
-            	boss.body.velocity.x = 75;
-            	boss.body.gravity.y = 0;
-            	boss.health = 10000;
+			var boss = mobs.create(1950,350,'boss_sprite');
+            boss.body.velocity.x = -75;
+            boss.body.gravity.y = 0;
+            boss.health = 10000;
+			++mobnumber;
 				
 			break;
         
@@ -1087,30 +1098,37 @@ if(player1 != null && player2 != null){
     {
         //on click pull up Upgrade Menu
 		
-	//turret
+		//turret
+			
+		powerButton1.visible =! powerButton1.visible;
+		powerButton2.visible =! powerButton2.visible;
+		powerButton3.visible =! powerButton3.visible;
+		powerButton4.visible =! powerButton4.visible;
+		powerButton5.visible =! powerButton5.visible;
+			
+		//gun
+			
+		gunpowerButton1.visible =! gunpowerButton1.visible;
+		gunpowerButton2.visible =! gunpowerButton2.visible;
+		gunpowerButton3.visible =! gunpowerButton3.visible;
+		gunpowerButton4.visible =! gunpowerButton4.visible;
+		gunpowerButton5.visible =! gunpowerButton5.visible;
+			
+		gunspeedButton1.visible =! gunspeedButton1.visible;
+		gunspeedButton2.visible =! gunspeedButton2.visible;
+		gunspeedButton3.visible =! gunspeedButton3.visible;
+		gunspeedButton4.visible =! gunspeedButton4.visible;
+		gunspeedButton5.visible =! gunspeedButton5.visible;
+			
+			
+		//wall
 		
-	powerButton1.visible =! powerButton1.visible;
-	powerButton2.visible =! powerButton2.visible;
-	powerButton3.visible =! powerButton3.visible;
-	powerButton4.visible =! powerButton4.visible;
-	powerButton5.visible =! powerButton5.visible;
-		
-	//gun
-		
-	gunpowerButton1.visible =! gunpowerButton1.visible;
-	gunpowerButton2.visible =! gunpowerButton2.visible;
-	gunpowerButton3.visible =! gunpowerButton3.visible;
-	gunpowerButton4.visible =! gunpowerButton4.visible;
-	gunpowerButton5.visible =! gunpowerButton5.visible;
-		
-	gunspeedButton1.visible =! gunspeedButton1.visible;
-	gunspeedButton2.visible =! gunspeedButton2.visible;
-	gunspeedButton3.visible =! gunspeedButton3.visible;
-	gunspeedButton4.visible =! gunspeedButton4.visible;
-	gunspeedButton5.visible =! gunspeedButton5.visible;
-		
-		
-	//wall
+		healthincrease1.visible =! healthincrease1.visible;
+		healthincrease2.visible =! healthincrease2.visible;
+		healthincrease3.visible =! healthincrease3.visible;
+		healthincrease4.visible =! healthincrease4.visible;
+		healthincrease5.visible =! healthincrease5.visible;
+
 		
 		
         upgrade_menu.visible =! upgrade_menu.visible;
@@ -1129,7 +1147,7 @@ if(player1 != null && player2 != null){
 	}
 	else
 	{
-		console.log("Bought");
+		//console.log("Bought");
 		turretdamage = turretdamage + 5;
 		player1.gold -= 5;
 		player2.gold -= 5;
@@ -1148,7 +1166,7 @@ if(player1 != null && player2 != null){
 	}
 	else
 	{
-		console.log("Bought");
+		//console.log("Bought");
 		turretdamage = turretdamage + 10;
 		player1.gold -= 10;
 		player2.gold -= 10;
@@ -1164,7 +1182,7 @@ if(player1 != null && player2 != null){
 	}
 	else
 	{
-		console.log("Bought");
+		//console.log("Bought");
 		turretdamage = turretdamage + 15;
 		player1.gold -= 15;
 		player2.gold -= 15;
@@ -1181,7 +1199,7 @@ if(player1 != null && player2 != null){
 	}
 	else
 	{
-		console.log("Bought");
+		//console.log("Bought");
 		turretdamage = turretdamage + 20;
 		player1.gold -= 20;
 		player2.gold -= 20;
@@ -1197,7 +1215,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			turretdamage = turretdamage + 50;
 			player1.gold -= 50;
 			player2.gold -= 50;
@@ -1217,7 +1235,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			player1.bulletdamagevar += 5;
 			player2.bulletdamagevar += 5;
 			player1.gold -= 5;
@@ -1235,7 +1253,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			player1.bulletdamagevar += 10;
 			player2.bulletdamagevar += 10;
 			player1.gold -= 10;
@@ -1252,7 +1270,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			player1.bulletdamagevar += 15;
 			player2.bulletdamagevar += 15;
 			player1.gold -= 15;
@@ -1269,7 +1287,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			player1.bulletdamagevar += 20;
 			player2.bulletdamagevar += 20;
 			player1.gold -= 20;
@@ -1286,7 +1304,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			player1.bulletdamagevar += 50;
 			player2.bulletdamagevar += 50;
 			player1.gold -= 50;
@@ -1304,7 +1322,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			player1.bulletspeed += 5;
 			player2.bulletspeed += 5;
 			player1.gold -= 5;
@@ -1321,7 +1339,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			player1.bulletspeed += 10;
 			player2.bulletspeed += 10;
 			player1.gold -= 10;
@@ -1338,7 +1356,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			player1.bulletspeed += 15;
 			player2.bulletspeed += 15;
 			player1.gold -= 15;
@@ -1355,7 +1373,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			player1.bulletspeed += 20;
 			player2.bulletspeed += 20;
 			player1.gold -= 20;
@@ -1372,7 +1390,7 @@ if(player1 != null && player2 != null){
 		}
 		else
 		{
-			console.log("Bought");
+			//console.log("Bought");
 			player1.bulletspeed += 50;
 			player2.bulletspeed += 50;
 			player1.gold -= 50;
@@ -1380,6 +1398,100 @@ if(player1 != null && player2 != null){
 		}
 	}
     
+	
+	function health1upgrade()
+	{
+		var goldneeded = 5;
+		if(player1.gold < goldneeded)
+		{
+			//
+		}
+		
+		else
+		{
+			player1.gold -= 5;
+			player2.gold -= 5;
+			
+			wallnum = wallnum + 5;
+		}
+		
+	}
+	
+	
+	function health2upgrade()
+	{
+		var goldneeded = 10;
+		if(player1.gold < goldneeded)
+		{
+			//
+		}
+		
+		else
+		{
+			player1.gold -= 10;
+			player2.gold -= 10;
+			
+			wallnum = wallnum + 10;
+		}
+		
+	}
+	
+	function health3upgrade()
+	{
+		var goldneeded = 15;
+		if(player1.gold < goldneeded)
+		{
+			//
+		}
+		
+		else
+		{
+			player1.gold -= 15;
+			player2.gold -= 15;
+			
+			wallnum = wallnum + 15;
+		}
+		
+	}
+	
+	function health4upgrade()
+	{
+		var goldneeded = 20;
+		if(player1.gold < goldneeded)
+		{
+			//
+		}
+		
+		else
+		{
+			player1.gold -= 20;
+			player2.gold -= 20;
+			
+			wallnum = wallnum + 20;
+		}
+		
+	}
+	
+	function health5upgrade()
+	{
+		var goldneeded = 50;
+		if(player1.gold < goldneeded)
+		{
+			//
+		}
+		
+		else
+		{
+			player1.gold -= 50;
+			player2.gold -= 50;
+			
+			wallnum = wallnum + 50;
+		}
+		
+	}
+	
+	
+	
  
  
     function overUpgrade(){
@@ -1428,7 +1540,7 @@ if(player1 != null && player2 != null){
         if(round <= 10)
         {
             mobs.removeAll();
-            wall.health = 100;
+            wall.health = wallnum;
             mobnumber = mobnumber + 5;
             deadmobs = 0;
             createmobs();
@@ -1451,7 +1563,7 @@ if(player1 != null && player2 != null){
         createmobs();
         
         stateText.visible = false;
-        wall.health = 100;
+        wall.health = wallnum;
         
     }
     
@@ -1465,7 +1577,7 @@ if(player1 != null && player2 != null){
         mobnumber = 5;
         score = 0;
         deadmobs = 0;
-        wall.health = 100;
+        wall.health = wallnum;
         createmobs();
         stateText.visible = false;
     }
