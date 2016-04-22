@@ -170,4 +170,4 @@ eurecaServer.exports.placeTurret = function(){
 };
 
 
-server.listen(12334);
+server.listen(12332);

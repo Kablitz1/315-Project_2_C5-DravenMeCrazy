@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////////
 	var game;
     
+	var newRound = true;
     
     var flipFlop = false;
   
@@ -152,23 +153,58 @@ var eurecaClientSetup = function(){
 	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId, x, y){
 		if(p_Id == 1){
 			console.log("PLAYER 1 UP" + player1.alien.body.y);
-			player1.alien.body.velocity.y = -200;
+			//player1.alien.body.velocity.y = -200;
+			//player1.alien.y += -1;
+			
+			if(player1.alien.body.y >= 80){
+				console.log("UP KEY");
+				//player1.alien.body.velocity.y = -player1.game.speed;
+				//player1.alien.body.y = 500;
+				//player1.alien.body.velocity.y = -200;
+				player1.alien.y += -1;
+			}
 		}
 		if(p_Id == 2){
 			console.log("PLAYER 2 UP" + player2.alien.body.y);
-			player2.alien.body.velocity.y = -200;
+			//player2.alien.body.velocity.y = -200;
+			//player2.alien.y += -1;
+			
+			if(player2.alien.body.y >= 80){
+				console.log("UP KEY");
+				//player2.alien.body.velocity.y = -player2.game.speed;
+				//player2.alien.body.y = 500;
+				//player2.alien.body.velocity.y = -200;
+				player2.alien.y += -1;
+			}
 		}
 	}
 	
 	eurecaClient.exports.movePlayerDown = function(p_Id, eurecaId,x,y){
 		if(p_Id == 1){
 			console.log("PLAYER 1 DOWN" + player1.alien.body.y);
-			player1.alien.body.velocity.y = 300;
+			//player1.alien.body.velocity.y = 300;
+			//player1.alien.y += 1;
 			
+			if(player1.alien.body.y <= player1.game.world.height - 200){
+				console.log("UP KEY");
+				//player1.alien.body.velocity.y = -player1.game.speed;
+				//player1.alien.body.y = 500;
+				//player1.alien.body.velocity.y = 200;
+				player1.alien.y += 1;
+			}
 		}
 		if(p_Id == 2){
 			console.log("PLAYER 2 DOWN" + player2.alien.body.y);
-			player2.alien.body.velocity.y = 300;
+			//player2.alien.body.velocity.y = 300;
+			//player2.alien.y += 1;
+			
+			if(player2.alien.body.y <= player2.game.world.height - 200){
+				console.log("UP KEY");
+				//player2.alien.body.velocity.y = -player2.game.speed;
+				//player2.alien.body.y = 500;
+				//player2.alien.body.velocity.y = 200;
+				player2.alien.y += 1;
+			}
 		}
 	}
 	
@@ -184,12 +220,13 @@ var eurecaClientSetup = function(){
 			player2.alien.x = x;
 			player2.alien.y = y;
 		}*/
-		if(p_Id == 1){
+		if(p_Id == 1 && playerIndex == 2 && newRound == true){
 			for(var i = 0; i < mobarrayx.length; i++){
 				mobs.getAt(i).x = mobarrayx[i];
 				mobs.getAt(i).y = mobarrayy[i];
 			}
 		}
+		newRound = false;
 	}	
 	
 	eurecaClient.exports.switchWeapon = function(p_Id, weapon){
@@ -341,7 +378,7 @@ Player.prototype.fireRocket = function(){
 ////////////////////////////////////////////////////////////////////
 Player.prototype.update = function(){
 
-    this.alien.body.velocity.set(0);
+    //this.alien.body.velocity.set(0);
 //weapon switch
     if(this.game.input.keyboard.isDown(Phaser.Keyboard.ONE)){
 		eurecaServer.switchWeapon(playerIndex, 1);
@@ -742,22 +779,22 @@ placeTurret = function(){
 ////////////////////////////////////////////////////////////////////
 //  Gamestate Update Function
 ///////////////////////////////////////////////////////////////////
-var loop5 = 0;//this is so certain functions only happen every 5 updates
+//var loop5 = 0;//this is so certain functions only happen every 5 updates
         function update () {
 if(player1 != null && player2 != null){
 			
 	
 			if(playerIndex === 1){
-				player2.alien.body.velocity.set(0);
+				//player2.alien.body.velocity.set(0);
 				player1.update();
 			}
 			if(playerIndex === 2){
-				player1.alien.body.velocity.set(0);
+				//player1.alien.body.velocity.set(0);
 				player2.update();
 			}
 			
-			loop5++;
-			if(loop5 > 5){
+			//loop5++;
+			//if(loop5 > 5){
 				if(playerIndex === 1){
 					var mobarrayx = [];
 					var mobarrayy = [];
@@ -772,8 +809,8 @@ if(player1 != null && player2 != null){
 					//var mobarrayy = [];
 					//eurecaServer.updateState(playerIndex, myId, player2.alien.x, player2.alien.y, mobarrayx, mobarrayy);
 				}
-				loop5 = 0;
-			}
+				//loop5 = 0;
+			//}
 		
         
         if(game.input.keyboard.isDown(Phaser.Keyboard.J)){
@@ -877,12 +914,12 @@ if(player1 != null && player2 != null){
 			player2.gold += 1;
             deadmobs ++;
 			
-			
+			//???  check from old version?
 			if(round === 10)
 			{
 				if(deadmobs === mobnumber)
 				{
-					stateText.text = " You Won, \n Click to Continue on the the next round";
+					stateText.text = " You Won, \n Click to Continue on to the next round";
 					stateText.visible = true;
 					game.input.onTap.addOnce(restart,this);
 				}
@@ -895,7 +932,7 @@ if(player1 != null && player2 != null){
             {
                 if(round <= 10 )
                 {
-                    stateText.text = " You Won, \n Click to Continue on the the next round";
+                    stateText.text = " You Won, \n Click to Continue on to the next round";
                     stateText.visible = true;
                 }
                 
@@ -1544,6 +1581,7 @@ if(player1 != null && player2 != null){
             mobnumber = mobnumber + 5;
             deadmobs = 0;
             createmobs();
+			newRound = true;  //Used for initial mobs synching for player2
         
             stateText.visible = false;
         }
@@ -1561,6 +1599,7 @@ if(player1 != null && player2 != null){
         mobs.removeAll();
         deadmobs = 0;
         createmobs();
+		newRound = true;  //Used for initial mobs synching for player2
         
         stateText.visible = false;
         wall.health = wallnum;
@@ -1579,5 +1618,6 @@ if(player1 != null && player2 != null){
         deadmobs = 0;
         wall.health = wallnum;
         createmobs();
+		newRound = true;  //Used for initial mobs synching for player2
         stateText.visible = false;
     }
