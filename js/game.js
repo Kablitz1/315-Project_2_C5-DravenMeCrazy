@@ -56,6 +56,12 @@
     var powerButton4;
     var powerButton5;
 	
+	var turretspeedButton1;
+	var turretspeedButton2;
+	var turretspeedButton3;
+	var turretspeedButton4;
+	var turretspeedButton5;
+	
     //guns
 	
     var gunpowerButton1;
@@ -81,7 +87,6 @@
 	
 	
     var helpButton;
-	
     var optionButton;
 	var settingsButton;
     
@@ -111,7 +116,8 @@
     var goldstate;
 	
     //turret damage variable
-    var turretdamage = 50;
+    var turretdamage = 25;
+	var turretspeed = 0;
 
 ////////////////////////////////////////////////////////////////////
 //  eurecaClient Setup
@@ -138,26 +144,26 @@ var eurecaClientSetup = function(){
     }    
     
     eurecaClient.exports.helloWorld = function(id, p_Id, eurecaId){
-		console.log("HELLO WORLD " + p_Id);
-		console.log("HELLO WORLD " + eurecaId);
+		//console.log("HELLO WORLD " + p_Id);
+		//console.log("HELLO WORLD " + eurecaId);
 	}
 	
 	eurecaClient.exports.spawnPlayer = function(clientId, iplayerIndex){
 		game = new Phaser.Game(1920, 900, Phaser.WEBGL, 'game', {preload: preload, create: create, update: update});
 		if(game != null){
-			console.log("Set Game Properly");
+			//console.log("Set Game Properly");
 		}
 		game.boot();
 	}
 	
 	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId, x, y){
 		if(p_Id == 1){
-			console.log("PLAYER 1 UP" + player1.alien.body.y);
+			//console.log("PLAYER 1 UP" + player1.alien.body.y);
 			//player1.alien.body.velocity.y = -200;
 			//player1.alien.y += -1;
 			
 			if(player1.alien.body.y >= 80){
-				console.log("UP KEY");
+				//console.log("UP KEY");
 				//player1.alien.body.velocity.y = -player1.game.speed;
 				//player1.alien.body.y = 500;
 				//player1.alien.body.velocity.y = -200;
@@ -165,12 +171,12 @@ var eurecaClientSetup = function(){
 			}
 		}
 		if(p_Id == 2){
-			console.log("PLAYER 2 UP" + player2.alien.body.y);
+			//console.log("PLAYER 2 UP" + player2.alien.body.y);
 			//player2.alien.body.velocity.y = -200;
 			//player2.alien.y += -1;
 			
 			if(player2.alien.body.y >= 80){
-				console.log("UP KEY");
+				//console.log("UP KEY");
 				//player2.alien.body.velocity.y = -player2.game.speed;
 				//player2.alien.body.y = 500;
 				//player2.alien.body.velocity.y = -200;
@@ -181,7 +187,7 @@ var eurecaClientSetup = function(){
 	
 	eurecaClient.exports.movePlayerDown = function(p_Id, eurecaId,x,y){
 		if(p_Id == 1){
-			console.log("PLAYER 1 DOWN" + player1.alien.body.y);
+			//console.log("PLAYER 1 DOWN" + player1.alien.body.y);
 			//player1.alien.body.velocity.y = 300;
 			//player1.alien.y += 1;
 			
@@ -194,12 +200,12 @@ var eurecaClientSetup = function(){
 			}
 		}
 		if(p_Id == 2){
-			console.log("PLAYER 2 DOWN" + player2.alien.body.y);
+			//console.log("PLAYER 2 DOWN" + player2.alien.body.y);
 			//player2.alien.body.velocity.y = 300;
 			//player2.alien.y += 1;
 			
 			if(player2.alien.body.y <= player2.game.world.height - 200){
-				console.log("UP KEY");
+				//console.log("UP KEY");
 				//player2.alien.body.velocity.y = -player2.game.speed;
 				//player2.alien.body.y = 500;
 				//player2.alien.body.velocity.y = 200;
@@ -392,7 +398,7 @@ Player.prototype.update = function(){
 
 //helloWorld test	
 	if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
-		console.log("Trying to helloWorld");
+		//console.log("Trying to helloWorld");
 		eurecaServer.helloWorld(playerIndex);
 	}
     
@@ -467,7 +473,7 @@ Turret.prototype.fireTurret = function(){
 
             var bullet = this.game.add.sprite(this.turret_sprite.x + 75, this.turret_sprite.y + 20, 'rifle_projectile');
             this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
-            bullet.body.velocity.x = 400;
+            bullet.body.velocity.x = 300 + turretspeed;
             bullet.damage = turretdamage;
             this.tBullets.push(bullet);
             
@@ -492,9 +498,9 @@ placeTurret = function(){
 //  Preload
 ////////////////////////////////////////////////////////////////////
         function preload() {
-			console.log("Preload being called...");
+			//console.log("Preload being called...");
 			if(game != null){
-				console.log("GAME IS NOT NULL DAMMIT");
+				//console.log("GAME IS NOT NULL DAMMIT");
 			}
             var asset_location = 'assets/'; //uncomment for cloud9
             //var asset_location = ''; //uncomment for compute
@@ -644,7 +650,23 @@ placeTurret = function(){
 			
 			powerButton5 = game.add.button(770,565,"power5button",power5upgrade,game,0);
 			powerButton5.visible =! powerButton5.visible;
-            
+			
+			turretspeedButton1 = game.add.button(660,255,"speed1button",speed1turret,game,0);
+			turretspeedButton1.visible =! turretspeedButton1.visible;
+			
+			turretspeedButton2 = game.add.button(660,330,"speed2button",speed2turret,game,0);
+			turretspeedButton2.visible =! turretspeedButton2.visible;
+			
+			turretspeedButton3 = game.add.button(661,407,"speed3button",speed3turret,game,0);
+			turretspeedButton3.visible =! turretspeedButton3.visible;
+			
+			turretspeedButton4 = game.add.button(660,490,"speed4button",speed4turret,game,0);
+			turretspeedButton4.visible =! turretspeedButton4.visible;
+			
+			turretspeedButton5 = game.add.button(660,565,"speed5button",speed5turret,game,0);
+			turretspeedButton5.visible =! turretspeedButton5.visible;
+			
+			
 			//gun upgrade buttons
 			
 			gunspeedButton1 = game.add.button(920,255,"speed1button",speed1upgrade,game,0);
@@ -748,16 +770,18 @@ placeTurret = function(){
                             //setInterval(function(){damageWall(i);},10000);//damage wall based on particular mob index 2 sec delay
                         }
                         else
-                        {
+                        {		
                             //var style = { font: "bold 78px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" }; 
                             //var defeat = game.add.text(0,0, "DEFEAT!", style);
                             
                             if(lostcount < 3)
                             {
-                                stateText.text = "Defeated \n Click on screen to Restart Round";
+                                stateText.text = "Defeated \n Please wait 10 seconds to restart the round";
                                 stateText.visible = true;
             
-                                game.input.onTap.addOnce(restartiflost,game);
+                                //game.input.onTap.addOnce(restartiflost,game);
+								
+								setTimeout(restartiflost,10000);
                             }
                             
                             else if(lostcount === 3)
@@ -781,7 +805,8 @@ placeTurret = function(){
 ///////////////////////////////////////////////////////////////////
 //var loop5 = 0;//this is so certain functions only happen every 5 updates
         function update () {
-if(player1 != null && player2 != null){
+			
+			if(player1 != null && player2 != null){
 			
 	
 			if(playerIndex === 1){
@@ -814,7 +839,7 @@ if(player1 != null && player2 != null){
 		
         
         if(game.input.keyboard.isDown(Phaser.Keyboard.J)){
-			console.log("Trying to helloWorld");
+			//console.log("Trying to helloWorld");
              eurecaServer.helloWorld(playerIndex, myId);
         }
 		
@@ -852,14 +877,15 @@ if(player1 != null && player2 != null){
 
 //turret handling            
             if(game.input.keyboard.isDown(Phaser.Keyboard.FOUR) && turrets.length < 8){
-				goldneeded = 1;
+				goldneeded = 20;
 				if(player1.gold < goldneeded)
 				{
 					//
 				}
                 else if(!flipFlop){
-					player1.gold = player1.gold - 1;
-					player2.gold = player2.gold - 1;
+					player1.gold = player1.gold - 20;
+					player2.gold = player2.gold - 20;
+					console.log("place turret client");
                     eurecaServer.placeTurret();
                 }
             }
@@ -932,11 +958,12 @@ if(player1 != null && player2 != null){
             {
                 if(round <= 10 )
                 {
-                    stateText.text = " You Won, \n Click to Continue on to the next round";
+                    stateText.text = " You Won, please wait 10 seconds for next round";
                     stateText.visible = true;
                 }
                 
-                game.input.onTap.addOnce(restart,game);
+                //game.input.onTap.addOnce(restart,game);
+				setTimeout(restart,10000);
             }            
             
         }
@@ -1142,6 +1169,12 @@ if(player1 != null && player2 != null){
 		powerButton3.visible =! powerButton3.visible;
 		powerButton4.visible =! powerButton4.visible;
 		powerButton5.visible =! powerButton5.visible;
+		
+		turretspeedButton1.visible =! turretspeedButton1.visible;
+		turretspeedButton2.visible =! turretspeedButton2.visible;
+		turretspeedButton3.visible =! turretspeedButton3.visible;
+		turretspeedButton4.visible =! turretspeedButton4.visible;
+		turretspeedButton5.visible =! turretspeedButton5.visible;
 			
 		//gun
 			
@@ -1258,6 +1291,84 @@ if(player1 != null && player2 != null){
 			player2.gold -= 50;
 		}
 		
+	}
+	
+	
+	function speed1turret()
+	{
+		var goldneeded = 5;
+		if(player1.gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretspeed = turretspeed + 5;
+			player1.gold -=5;
+			player2.gold -=5;
+		}
+	}
+	
+	function speed2turret()
+	{
+		var goldneeded = 10;
+		if(player1.gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretspeed = turretspeed + 10;
+			player1.gold -=10;
+			player2.gold -=10;
+		}
+	}
+	
+	function speed3turret()
+	{
+		var goldneeded = 15;
+		if(player1.gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretspeed = turretspeed + 15;
+			player1.gold -=15;
+			player2.gold -=15;
+		}
+	}
+	
+	
+	function speed4turret()
+	{
+		var goldneeded = 20;
+		if(player1.gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretspeed = turretspeed + 20;
+			player1.gold -=20;
+			player2.gold -=20;
+		}
+	}
+	
+	
+	function speed5turret()
+	{
+		var goldneeded = 50;
+		if(player1.gold < goldneeded)
+		{
+			//
+		}
+		else
+		{
+			turretspeed = turretspeed + 50;
+			player1.gold -=50;
+			player2.gold -=50;
+		}
 	}
 	
 	
@@ -1538,7 +1649,7 @@ if(player1 != null && player2 != null){
          //un-highlight upgrade button
     }
     function upUpgrade(){
-       console.log('button up', arguments);
+       //console.log('button up', arguments);
     }
     
     
@@ -1551,7 +1662,7 @@ if(player1 != null && player2 != null){
     function outOption(){
     }
     function upOption(){
-       console.log('button up', arguments);
+       //console.log('button up', arguments);
     }
     
 	function settings()
@@ -1568,7 +1679,7 @@ if(player1 != null && player2 != null){
     function outHelp(){
     }
     function upHelp(){
-       console.log('button up', arguments);
+       //console.log('button up', arguments);
     }
     
     function restart ()
