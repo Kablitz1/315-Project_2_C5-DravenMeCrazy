@@ -1,6 +1,6 @@
 # 315-Project_2_C5-DravenMeCrazy
 
-Team Members Eric, Mark, Dylan, and Troy.
+Team Members Eric, Mark, and Dylan
 
 Multiplayer Game Repo
 to pull down repo:
