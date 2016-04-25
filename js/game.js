@@ -558,7 +558,7 @@ placeTurret = function(){
 			game.load.image('settingsbutton',asset_location + 'settingsbutton.jpg');
             
             //menus
-            game.load.image('upgrade_menu2', asset_location + 'upgrade_menu2.png');
+            game.load.image('upgrade_menu', asset_location + 'upgrade_menu.png');
             game.load.image('option_menu', asset_location + 'options_menu.png');
             game.load.image('help_menu', asset_location + 'help_menu.png');
 
