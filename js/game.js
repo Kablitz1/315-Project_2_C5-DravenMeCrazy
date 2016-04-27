@@ -56,12 +56,6 @@
     var powerButton4;
     var powerButton5;
 	
-	var turretspeedButton1;
-	var turretspeedButton2;
-	var turretspeedButton3;
-	var turretspeedButton4;
-	var turretspeedButton5;
-	
     //guns
 	
     var gunpowerButton1;
@@ -87,8 +81,16 @@
 	
 	
     var helpButton;
+	
     var optionButton;
 	var settingsButton;
+	
+	
+	var bg_music;
+	
+	var blaster;
+	var machine_sound;
+	var rocket_sound;
     
     // enemies
     var mobs;
@@ -116,8 +118,7 @@
     var goldstate;
 	
     //turret damage variable
-    var turretdamage = 25;
-	var turretspeed = 0;
+    var turretdamage = 50;
 
 ////////////////////////////////////////////////////////////////////
 //  eurecaClient Setup
@@ -144,26 +145,26 @@ var eurecaClientSetup = function(){
     }    
     
     eurecaClient.exports.helloWorld = function(id, p_Id, eurecaId){
-		//console.log("HELLO WORLD " + p_Id);
-		//console.log("HELLO WORLD " + eurecaId);
+		console.log("HELLO WORLD " + p_Id);
+		console.log("HELLO WORLD " + eurecaId);
 	}
 	
 	eurecaClient.exports.spawnPlayer = function(clientId, iplayerIndex){
 		game = new Phaser.Game(1920, 900, Phaser.WEBGL, 'game', {preload: preload, create: create, update: update});
 		if(game != null){
-			//console.log("Set Game Properly");
+			console.log("Set Game Properly");
 		}
 		game.boot();
 	}
 	
 	eurecaClient.exports.movePlayerUp = function(p_Id, eurecaId, x, y){
 		if(p_Id == 1){
-			//console.log("PLAYER 1 UP" + player1.alien.body.y);
+			console.log("PLAYER 1 UP" + player1.alien.body.y);
 			//player1.alien.body.velocity.y = -200;
 			//player1.alien.y += -1;
 			
 			if(player1.alien.body.y >= 80){
-				//console.log("UP KEY");
+				console.log("UP KEY");
 				//player1.alien.body.velocity.y = -player1.game.speed;
 				//player1.alien.body.y = 500;
 				//player1.alien.body.velocity.y = -200;
@@ -171,12 +172,12 @@ var eurecaClientSetup = function(){
 			}
 		}
 		if(p_Id == 2){
-			//console.log("PLAYER 2 UP" + player2.alien.body.y);
+			console.log("PLAYER 2 UP" + player2.alien.body.y);
 			//player2.alien.body.velocity.y = -200;
 			//player2.alien.y += -1;
 			
 			if(player2.alien.body.y >= 80){
-				//console.log("UP KEY");
+				console.log("UP KEY");
 				//player2.alien.body.velocity.y = -player2.game.speed;
 				//player2.alien.body.y = 500;
 				//player2.alien.body.velocity.y = -200;
@@ -187,7 +188,7 @@ var eurecaClientSetup = function(){
 	
 	eurecaClient.exports.movePlayerDown = function(p_Id, eurecaId,x,y){
 		if(p_Id == 1){
-			//console.log("PLAYER 1 DOWN" + player1.alien.body.y);
+			console.log("PLAYER 1 DOWN" + player1.alien.body.y);
 			//player1.alien.body.velocity.y = 300;
 			//player1.alien.y += 1;
 			
@@ -200,12 +201,12 @@ var eurecaClientSetup = function(){
 			}
 		}
 		if(p_Id == 2){
-			//console.log("PLAYER 2 DOWN" + player2.alien.body.y);
+			console.log("PLAYER 2 DOWN" + player2.alien.body.y);
 			//player2.alien.body.velocity.y = 300;
 			//player2.alien.y += 1;
 			
 			if(player2.alien.body.y <= player2.game.world.height - 200){
-				//console.log("UP KEY");
+				console.log("UP KEY");
 				//player2.alien.body.velocity.y = -player2.game.speed;
 				//player2.alien.body.y = 500;
 				//player2.alien.body.velocity.y = 200;
@@ -324,7 +325,7 @@ Player.prototype.fireRifle = function(){
             bullet.body.velocity.x = 600 + this.bulletspeed;
             bullet.damage = 35 + this.bulletdamagevar;
             this.rifleBullets.push(bullet);
-            
+            blaster.play();
     }
     else
     {
@@ -349,7 +350,7 @@ Player.prototype.fireMachine = function(){
             bullet.body.velocity.x = 600 + this.bulletspeed;
             bullet.damage = 15 + this.bulletdamagevar;
             this.mBullets.push(bullet);
-            
+            machine_sound.play();
     }
     else{
         this.mBullets = [];//clear bullets
@@ -373,7 +374,7 @@ Player.prototype.fireRocket = function(){
             bullet.body.velocity.x = 400 + this.bulletspeed;
             bullet.damage = 100 + this.bulletdamagevar;
             this.mBullets.push(bullet);
-            
+            rocket_sound.play();
     }
     else{
         this.rBullets = [];//clear bullets
@@ -398,7 +399,7 @@ Player.prototype.update = function(){
 
 //helloWorld test	
 	if(this.game.input.keyboard.isDown(Phaser.Keyboard.X)){
-		//console.log("Trying to helloWorld");
+		console.log("Trying to helloWorld");
 		eurecaServer.helloWorld(playerIndex);
 	}
     
@@ -468,16 +469,18 @@ Turret.prototype.fireTurret = function(){
     }
     
    this.tnextShotAt = this.game.time.now + this.tshotDelay;
-    
+    if(stateText.visible == false){
      if(this.tBullets.length < this.tAmmo){
 
             var bullet = this.game.add.sprite(this.turret_sprite.x + 75, this.turret_sprite.y + 20, 'rifle_projectile');
             this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
-            bullet.body.velocity.x = 300 + turretspeed;
+            bullet.body.velocity.x = 400;
             bullet.damage = turretdamage;
             this.tBullets.push(bullet);
             
     }
+	
+	}
 
 };
 ////////////////////////////////////////////////////////////////////
@@ -498,9 +501,9 @@ placeTurret = function(){
 //  Preload
 ////////////////////////////////////////////////////////////////////
         function preload() {
-			//console.log("Preload being called...");
+			console.log("Preload being called...");
 			if(game != null){
-				//console.log("GAME IS NOT NULL DAMMIT");
+				console.log("GAME IS NOT NULL DAMMIT");
 			}
             var asset_location = 'assets/'; //uncomment for cloud9
             //var asset_location = ''; //uncomment for compute
@@ -561,6 +564,11 @@ placeTurret = function(){
             game.load.image('upgrade_menu', asset_location + 'upgrade_menu.png');
             game.load.image('option_menu', asset_location + 'options_menu.png');
             game.load.image('help_menu', asset_location + 'help_menu.png');
+			
+			game.load.audio('bg_music', asset_location + 'soundtrack.mp3');
+			game.load.audio('blaster', asset_location + 'blaster.mp3');
+			game.load.audio('machine_sound', asset_location + 'machine_bullet.mp3');
+			game.load.audio('rocket_sound', asset_location + 'rocket_bullet.mp3');
 
         };
 ////////////////////////////////////////////////////////////////////
@@ -631,7 +639,7 @@ placeTurret = function(){
             muteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
             //add menu overlays
-            upgrade_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'upgrade_menu2'); //makes upgrade menu
+            upgrade_menu = game.add.image(game.world.centerX- 400, game.world.centerY- 400, 'upgrade_menu'); //makes upgrade menu
             upgrade_menu.visible =! upgrade_menu.visible;
             
 			//turret upgrade buttons
@@ -650,23 +658,7 @@ placeTurret = function(){
 			
 			powerButton5 = game.add.button(770,565,"power5button",power5upgrade,game,0);
 			powerButton5.visible =! powerButton5.visible;
-			
-			turretspeedButton1 = game.add.button(660,255,"speed1button",speed1turret,game,0);
-			turretspeedButton1.visible =! turretspeedButton1.visible;
-			
-			turretspeedButton2 = game.add.button(660,330,"speed2button",speed2turret,game,0);
-			turretspeedButton2.visible =! turretspeedButton2.visible;
-			
-			turretspeedButton3 = game.add.button(661,407,"speed3button",speed3turret,game,0);
-			turretspeedButton3.visible =! turretspeedButton3.visible;
-			
-			turretspeedButton4 = game.add.button(660,490,"speed4button",speed4turret,game,0);
-			turretspeedButton4.visible =! turretspeedButton4.visible;
-			
-			turretspeedButton5 = game.add.button(660,565,"speed5button",speed5turret,game,0);
-			turretspeedButton5.visible =! turretspeedButton5.visible;
-			
-			
+            
 			//gun upgrade buttons
 			
 			gunspeedButton1 = game.add.button(920,255,"speed1button",speed1upgrade,game,0);
@@ -743,6 +735,13 @@ placeTurret = function(){
             stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
             stateText.anchor.setTo(0.5, 0.5);
             stateText.visible = false;
+			
+			bg_music = game.add.audio('bg_music');
+			bg_music.loopFull(0.25);
+			
+			blaster = game.add.audio('blaster');
+			machine_sound = game.add.audio('machine_sound');
+			rocket_sound = game.add.audio('rocket_sound');
 
 			
 			player1 = new Player(game, myId, 1);
@@ -770,18 +769,16 @@ placeTurret = function(){
                             //setInterval(function(){damageWall(i);},10000);//damage wall based on particular mob index 2 sec delay
                         }
                         else
-                        {		
+                        {
                             //var style = { font: "bold 78px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" }; 
                             //var defeat = game.add.text(0,0, "DEFEAT!", style);
                             
                             if(lostcount < 3)
                             {
-                                stateText.text = "Defeated \n Please wait 10 seconds to restart the round";
+                                stateText.text = "Defeated \n Click on screen to Restart Round";
                                 stateText.visible = true;
             
-                                //game.input.onTap.addOnce(restartiflost,game);
-								
-								setTimeout(restartiflost,10000);
+                                game.input.onTap.addOnce(restartiflost,game);
                             }
                             
                             else if(lostcount === 3)
@@ -805,8 +802,7 @@ placeTurret = function(){
 ///////////////////////////////////////////////////////////////////
 //var loop5 = 0;//this is so certain functions only happen every 5 updates
         function update () {
-			
-			if(player1 != null && player2 != null){
+if(player1 != null && player2 != null){
 			
 	
 			if(playerIndex === 1){
@@ -839,7 +835,7 @@ placeTurret = function(){
 		
         
         if(game.input.keyboard.isDown(Phaser.Keyboard.J)){
-			//console.log("Trying to helloWorld");
+			console.log("Trying to helloWorld");
              eurecaServer.helloWorld(playerIndex, myId);
         }
 		
@@ -885,7 +881,6 @@ placeTurret = function(){
                 else if(!flipFlop){
 					player1.gold = player1.gold - 20;
 					player2.gold = player2.gold - 20;
-					console.log("place turret client");
                     eurecaServer.placeTurret();
                 }
             }
@@ -958,12 +953,11 @@ placeTurret = function(){
             {
                 if(round <= 10 )
                 {
-                    stateText.text = " You Won, please wait 10 seconds for next round";
+                    stateText.text = " You Won, \n Click to Continue on to the next round";
                     stateText.visible = true;
                 }
                 
-                //game.input.onTap.addOnce(restart,game);
-				setTimeout(restart,10000);
+                game.input.onTap.addOnce(restart,game);
             }            
             
         }
@@ -1032,7 +1026,7 @@ placeTurret = function(){
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
 				mob.body.velocity.x = -110;
 				mob.body.gravity.y = 0;
-				mob.health = 300;
+				mob.health = 200;
 				wavex += 5;
 				wavey += 45;
 				mobdamage = 3;
@@ -1047,7 +1041,7 @@ placeTurret = function(){
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
 				mob.body.velocity.x = -110;
 				mob.body.gravity.y = 0;
-				mob.health = 300;
+				mob.health = 200;
 				wavex += 5;
 				wavey += 30;
 				mobdamage = 3;
@@ -1092,7 +1086,7 @@ placeTurret = function(){
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
 				mob.body.velocity.x = -150;
 				mob.body.gravity.y = 0;
-				mob.health = 350;
+				mob.health = 400;
 				wavex += 5;
 				wavey += 15;
 				mobdamage = 5;
@@ -1107,7 +1101,7 @@ placeTurret = function(){
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
 				mob.body.velocity.x = -115;
 				mob.body.gravity.y = 0;
-				mob.health = 350;
+				mob.health = 400;
 				wavex += 15;
 				wavey += 10;
 				mobdamage = 1;
@@ -1122,7 +1116,7 @@ placeTurret = function(){
 				var mob =  mobs.create(1950 - wavex, wavey+100,'mob_sprite');
 				mob.body.velocity.x = -80;
 				mob.body.gravity.y = 0;
-				mob.health = 400;
+				mob.health = 450;
 				wavex += 12;
 				wavey += 10;
 				mobdamage = 1;
@@ -1169,12 +1163,6 @@ placeTurret = function(){
 		powerButton3.visible =! powerButton3.visible;
 		powerButton4.visible =! powerButton4.visible;
 		powerButton5.visible =! powerButton5.visible;
-		
-		turretspeedButton1.visible =! turretspeedButton1.visible;
-		turretspeedButton2.visible =! turretspeedButton2.visible;
-		turretspeedButton3.visible =! turretspeedButton3.visible;
-		turretspeedButton4.visible =! turretspeedButton4.visible;
-		turretspeedButton5.visible =! turretspeedButton5.visible;
 			
 		//gun
 			
@@ -1291,84 +1279,6 @@ placeTurret = function(){
 			player2.gold -= 50;
 		}
 		
-	}
-	
-	
-	function speed1turret()
-	{
-		var goldneeded = 5;
-		if(player1.gold < goldneeded)
-		{
-			//
-		}
-		else
-		{
-			turretspeed = turretspeed + 5;
-			player1.gold -=5;
-			player2.gold -=5;
-		}
-	}
-	
-	function speed2turret()
-	{
-		var goldneeded = 10;
-		if(player1.gold < goldneeded)
-		{
-			//
-		}
-		else
-		{
-			turretspeed = turretspeed + 10;
-			player1.gold -=10;
-			player2.gold -=10;
-		}
-	}
-	
-	function speed3turret()
-	{
-		var goldneeded = 15;
-		if(player1.gold < goldneeded)
-		{
-			//
-		}
-		else
-		{
-			turretspeed = turretspeed + 15;
-			player1.gold -=15;
-			player2.gold -=15;
-		}
-	}
-	
-	
-	function speed4turret()
-	{
-		var goldneeded = 20;
-		if(player1.gold < goldneeded)
-		{
-			//
-		}
-		else
-		{
-			turretspeed = turretspeed + 20;
-			player1.gold -=20;
-			player2.gold -=20;
-		}
-	}
-	
-	
-	function speed5turret()
-	{
-		var goldneeded = 50;
-		if(player1.gold < goldneeded)
-		{
-			//
-		}
-		else
-		{
-			turretspeed = turretspeed + 50;
-			player1.gold -=50;
-			player2.gold -=50;
-		}
 	}
 	
 	
@@ -1649,7 +1559,7 @@ placeTurret = function(){
          //un-highlight upgrade button
     }
     function upUpgrade(){
-       //console.log('button up', arguments);
+       console.log('button up', arguments);
     }
     
     
@@ -1662,7 +1572,7 @@ placeTurret = function(){
     function outOption(){
     }
     function upOption(){
-       //console.log('button up', arguments);
+       console.log('button up', arguments);
     }
     
 	function settings()
@@ -1679,7 +1589,7 @@ placeTurret = function(){
     function outHelp(){
     }
     function upHelp(){
-       //console.log('button up', arguments);
+       console.log('button up', arguments);
     }
     
     function restart ()
